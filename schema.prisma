@@ -1,0 +1,68 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id         String     @id @default(uuid())
+    email      String     @unique
+    name       String
+    password   String
+    role       Role       @default(USER)
+    posts      Post[]
+    categories Category[]
+    liked      Liked[]
+    profile    Profile?
+    banned     Boolean?   @default(false)
+}
+
+enum Role {
+    USER
+    ADMIN
+}
+
+model Profile {
+    id     String @id @default(uuid())
+    bio    String
+    user   User   @relation(fields: [userId], references: [id])
+    userId String @unique
+}
+
+model Category {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    name      String
+    author    User     @relation(fields: [authorId], references: [id])
+    authorId  String
+    posts     Post[]
+}
+
+model Post {
+    id         String   @id @default(uuid())
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    title      String?
+    like       Int      @default(0)
+    text       String?
+    author     User     @relation(fields: [authorId], references: [id])
+    authorId   String
+    category   Category @relation(fields: [categoryId], references: [id])
+    categoryId String
+    parentPost Post?    @relation("comments", fields: [parentId], references: [id])
+    parentId   String?
+    comments   Post[]   @relation("comments")
+    Liked      Liked[]
+}
+
+model Liked {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    author    User     @relation(fields: [authorId], references: [id])
+    authorId  String
+    post      Post     @relation(fields: [postId], references: [id])
+    postId    String
+}

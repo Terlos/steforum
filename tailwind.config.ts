@@ -1,20 +1,35 @@
-import type { Config } from "tailwindcss";
+import type { Config } from "tailwindcss"
 
-const config: Config = {
+const config = {
+  darkMode: ["class"],
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+	],
+  prefix: "",
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      height: {
+        'screen-without-header': 'calc(var(--viewport-height, 100vh) - var(--shreddit-header-height) - 1px)',
+      },
+      colors: {
+      gray: "#4D4D4D",
+      darkWhite: "#FAFAFA",
+      "light-gray": "#F0F0F0",
+      "mid-gray": "#C7C7C7"
+      },
+      gridTemplateColumns: {
+        '256-1fr-256': '256px minmax(0, 1fr) 256px',
       },
     },
   },
-  plugins: [],
-};
-export default config;
+  plugins: [
+    require('tailwind-scrollbar')({
+      nocompatible: true
+    })
+  ]
+} satisfies Config
+
+export default config
