@@ -59,7 +59,7 @@ model Post {
 }
 
 model Liked {
-    id        String   @id @default(uuid())
+    id        String   @id @unique @default(uuid())
     createdAt DateTime @default(now())
     author    User     @relation(fields: [authorId], references: [id])
     authorId  String

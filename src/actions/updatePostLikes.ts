@@ -18,16 +18,13 @@ export const updatePostLikes = async(postId: string, likes: number) => {
         throw new Error("User is not authenticated");
     }
 
-    const existPost = await prisma.liked.findUnique({
+    const existPost = await prisma.liked.findFirst({
         where: {
-            id: postId,
-            authorId: userId,
+          authorId: userId,
+          postId: postId,
         },
-    });
-    console.log(userId);
-    console.log(postId);
-    console.log("GG", existPost)
-    if(existPost == null){
+      });      
+    if(!existPost){
         const liked = await prisma.liked.create({
             data: {
               authorId: userId,
@@ -47,6 +44,6 @@ export const updatePostLikes = async(postId: string, likes: number) => {
 
     return updatePost;
 }else{
-    console.log("User already liked this post");
+    console.log("You already liked this post");
 }
 };
