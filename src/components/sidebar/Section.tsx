@@ -12,12 +12,28 @@ interface Section {
   item: Item;
   index: number;
   openIndices: number[];
+  getFromLocalStorage: () => void;
+  getLikes: () => void;
 }
 
-export function Section({ toggleSection, item, index, openIndices }: Section) {
+export function Section({
+  toggleSection,
+  item,
+  index,
+  openIndices,
+  getFromLocalStorage,
+  getLikes,
+}: Section) {
   return (
     <div
-      onClick={() => toggleSection(index)}
+      onClick={() => {
+        toggleSection(index);
+        if (index == 0) {
+          getFromLocalStorage();
+        } else if (index == 1) {
+          getLikes();
+        }
+      }}
       className="flex flex-row justify-between items-center hover:cursor-pointer hover:bg-light-gray py-2 rounded-2xl px-3 w-full"
     >
       <div className="flex flex-row justify-start items-center gap-4">

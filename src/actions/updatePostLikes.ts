@@ -3,27 +3,23 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/auth";
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-type ResponseData = {
-    message: string
-}
-
-export const updatePostLikes = async(postId: string, likes: number) => {
+export const updatePostLikes = async(postId: string) => {
     
     const session = await getSession();
     const userId = session?.user.id;
 
-    
-
     if (!userId) {
         throw new Error("User is not authenticated");
     }
+
 
     const existPost = await prisma.liked.findFirst({
         where: {
           authorId: userId,
           postId: postId,
         },
-      });      
+      });     
+ 
     if(!existPost){
         const liked = await prisma.liked.create({
             data: {
@@ -32,18 +28,63 @@ export const updatePostLikes = async(postId: string, likes: number) => {
             },
           });
 
-    const updatePost = await prisma.post.update({
+          const getPost = await prisma.post.findFirst({
+            where: {
+                id: postId,
+            },
+            select: {
+                like: true,
+            },
+        });
+        
+        if (getPost) {
+            const newLikeCount = getPost.like + 1;
+        
+            const updatePost = await prisma.post.update({
+                where: {
+                    id: postId,
+                },
+                data: {
+                    like: newLikeCount,
+                    authorId: userId,
+                    isLiked: true,
+                },
+            });
+            
+        return updatePost;
+        }
+}else{
+    const deleteLiked = await prisma.liked.deleteMany({
+        where: {
+          authorId: userId,
+          postId: postId,
+        },
+      });
+
+    const getPost = await prisma.post.findFirst({
         where: {
             id: postId,
         },
-        data: {
-            like: likes + 1,
-            authorId: userId,
+        select: {
+            like: true,
         },
     });
-
+    
+    if (getPost) {
+        const newLikeCount = getPost.like - 1;
+    
+        const updatePost = await prisma.post.update({
+            where: {
+                id: postId,
+            },
+            data: {
+                like: newLikeCount,
+                authorId: userId,
+                isLiked: false,
+            },
+        });
+        
     return updatePost;
-}else{
-    console.log("You already liked this post");
+    }
 }
 };

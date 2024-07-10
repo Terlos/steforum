@@ -23,6 +23,7 @@ export function CategoryCard({ url, blurState }: communityInterface) {
   const [CATEGORY, setCategory] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [recent, setRecent] = useState([]);
 
   useEffect(() => {
     const filteredData = DATA.find((item) => item.name == url);
@@ -55,6 +56,22 @@ export function CategoryCard({ url, blurState }: communityInterface) {
     }
   }, [url]);
 
+  function addToLocalStorage(item: any) {
+    const existingItems = JSON.parse(
+      localStorage.getItem("recentItems") || "[]"
+    );
+
+    let shorterArray = [];
+
+    if (existingItems.length >= 10) {
+      shorterArray = existingItems.slice(0, 4);
+    } else {
+      shorterArray = existingItems;
+    }
+    shorterArray.push(item);
+    localStorage.setItem("recentItems", JSON.stringify(shorterArray));
+  }
+
   return (
     <div
       className={`flex flex-col justify-start items-center pt-6 gap-6 ${
@@ -68,6 +85,7 @@ export function CategoryCard({ url, blurState }: communityInterface) {
       ) : (
         CATEGORY.map((item) => (
           <Link
+            onClick={() => addToLocalStorage(item)}
             href={`/categoryRoom/${item.id}`}
             key={item.id}
             className="flex flex-row justify-between items-center w-3/5 bg-white rounded-3xl px-10 py-4 h-32"

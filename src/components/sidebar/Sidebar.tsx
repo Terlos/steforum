@@ -1,8 +1,7 @@
 import Image from "next/image";
 import arrow from "/public/arrow.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Section } from "./Section";
-
 import recent from "/public/recent.svg";
 import communities from "/public/communities.svg";
 import friends from "/public/friends.svg";
@@ -14,6 +13,8 @@ interface SideBar {
 
 export function SideBar({ blurState }: SideBar) {
   const [openIndices, setOpenIndices] = useState<number[]>([]);
+  const [recent, setRecent] = useState([]);
+  const [likePost, setLikePost] = useState([]);
 
   const toggleSection = (index: number) => {
     if (openIndices.includes(index)) {
@@ -22,6 +23,30 @@ export function SideBar({ blurState }: SideBar) {
       setOpenIndices([...openIndices, index]);
     }
   };
+
+  function getFromLocalStorage() {
+    const storedItems = localStorage.getItem("recentItems");
+
+    if (storedItems) {
+      setRecent(JSON.parse(storedItems));
+    } else {
+      setRecent([]);
+    }
+  }
+
+  function getLikes() {
+    fetch("http://localhost:3000/api/getLikes", {
+      method: "POST",
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        const result = data.filter((item: any) => item.parentId == null);
+        setLikePost(result);
+      })
+      .catch((error) => {
+        console.error("Error fetching posts:", error);
+      });
+  }
 
   return (
     <div className={`w-full ${blurState ? "blur" : " "}`}>
@@ -36,8 +61,12 @@ export function SideBar({ blurState }: SideBar) {
               item={item}
               index={index}
               openIndices={openIndices}
+              getFromLocalStorage={getFromLocalStorage}
+              getLikes={getLikes}
             />
-            {openIndices.includes(index) && <SectionItems index={index} />}
+            {openIndices.includes(index) && (
+              <SectionItems index={index} recent={recent} likePost={likePost} />
+            )}
           </div>
         ))}
       </div>

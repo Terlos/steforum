@@ -13,7 +13,6 @@ export default function CreatePost({ categoryId }: CreatePost) {
     setTitle("");
     setText("");
   }
-  console.log(categoryId);
   return (
     <>
       <form

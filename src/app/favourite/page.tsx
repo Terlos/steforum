@@ -1,24 +1,21 @@
 "use client";
 import { Navbar } from "@/components/Navbar";
-import { PostCard } from "./PostCard";
-import { SideBar } from "./sidebar/Sidebar";
-import { LoginForm } from "./LoginForm";
-import { RegisterForm } from "./RegisterForm";
 import { useState, useEffect } from "react";
 import { CategoryCard } from "@/components/category/CategoryCard";
 import { getSession, login, logout } from "@/auth";
-import CreatePost from "./create/CreatePost";
-import CreateCategory from "./create/CreateCategory";
+import { SideBar } from "@/components/sidebar/Sidebar";
+import { RegisterForm } from "@/components/RegisterForm";
+import { LoginForm } from "@/components/LoginForm";
+import { PostCard } from "@/components/PostCard";
 
-interface MainPage {}
-export function MainPage() {
+export function Favourite() {
   const [blurState, setBluerState] = useState(false);
   const [show, setShow] = useState(false);
   const [change, setChange] = useState("post");
   const [url, setUrl] = useState("post");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
   const [showCom, setShowCom] = useState(true);
-  // Check if user is logged in on component mount
+
   useEffect(() => {
     const checkSession = async () => {
       const session = await getSession();

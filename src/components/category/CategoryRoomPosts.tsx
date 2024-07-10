@@ -35,7 +35,6 @@ export function CategoryRoomPosts({
   showCom,
 }: postInterface) {
   const [POSTS, setPosts] = useState<Post[]>([]);
-  console.log(POSTS);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {

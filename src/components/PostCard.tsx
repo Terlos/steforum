@@ -3,7 +3,7 @@ import Image from "next/image";
 import profile from "/public/profile.png";
 import placeholder from "/public/brikule.webp";
 import { useEffect, useState } from "react";
-import { POST } from "@/app/api/category/route";
+import { Heart } from "lucide-react";
 import Link from "next/link";
 import { updatePostLikes } from "@/actions/updatePostLikes";
 
@@ -24,6 +24,7 @@ interface Post {
   comments: string;
   categoryId: string;
   category: any;
+  isLiked: Boolean;
 }
 
 export function PostCard({
@@ -45,7 +46,7 @@ export function PostCard({
       })
         .then((r) => r.json())
         .then((data) => {
-          console.log(data);
+          console.log("post", data);
           const result = data.filter((item: any) => item.parentId == null);
           const postsWithFormattedDate = result.map((post: Post) => ({
             ...post,
@@ -66,9 +67,24 @@ export function PostCard({
     }
   }, [url]);
 
+  function addLike(isLiked: Boolean, id: string) {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === id
+          ? {
+              ...post,
+              like: isLiked ? post.like - 1 : post.like + 1,
+              isLiked: !post.isLiked,
+            }
+          : post
+      )
+    );
+    updatePostLikes(id);
+  }
+
   return (
     <div
-      className={`flex flex-col justify-start items-center gap-6${
+      className={`flex flex-col justify-start items-center gap-6 ${
         blurState ? "blur" : " "
       }`}
     >
@@ -117,11 +133,17 @@ export function PostCard({
               <div className="flex flex-row justify-center items-center gap-1">
                 <p
                   onClick={() => {
-                    updatePostLikes(item.id, item.like);
+                    addLike(item.isLiked, item.id);
                   }}
-                  className="text-gray text-sm"
+                  className={`flex flew-row justify-center items-center text-sm gap-1 `}
                 >
-                  {item.like} likes
+                  {item.like}{" "}
+                  <Heart
+                    size={14}
+                    className={`${
+                      item.isLiked ? "text-red-800 fill-red-800" : "text-gray"
+                    }`}
+                  />
                 </p>
                 <p className="text-gray text-sm">.</p>
                 <Link href={`/comments/${item.categoryId}/${item.id}`}>

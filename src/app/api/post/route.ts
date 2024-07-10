@@ -4,7 +4,7 @@ import { prisma } from '../../../lib/prisma';
 type ResponseData = {
   message: string
 }
- 
+
 export async function POST(
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>

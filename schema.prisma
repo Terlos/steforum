@@ -47,6 +47,7 @@ model Post {
     updatedAt  DateTime @updatedAt
     title      String?
     like       Int      @default(0)
+    isLiked    Boolean  @default(false)
     text       String?
     author     User     @relation(fields: [authorId], references: [id])
     authorId   String
