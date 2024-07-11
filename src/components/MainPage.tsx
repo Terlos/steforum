@@ -68,6 +68,8 @@ export function MainPage() {
           blurState={blurState}
           setShowCom={setShowCom}
           showCom={showCom}
+          isLoggedIn={isLoggedIn}
+          blur={blur}
         />
       </div>
     </main>

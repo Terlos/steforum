@@ -9,6 +9,8 @@ export async function POST(
   const session = await getSession();
   const userId = session?.user.id;
 
+  if(session){
+
   const likedPosts = await prisma.liked.findMany({
     where: {
       authorId: userId,
@@ -31,4 +33,7 @@ export async function POST(
   console.log(getLikedPosts);
   
   return Response.json(getLikedPosts)
+}else{
+  return
+}
 }

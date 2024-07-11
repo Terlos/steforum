@@ -14,6 +14,7 @@ interface MainPage {}
 export default function Communities() {
   const [blurState, setBluerState] = useState(false);
   const [show, setShow] = useState(false);
+  console.log(show);
   const [change, setChange] = useState("post");
   const [url, setUrl] = useState("category");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
@@ -48,6 +49,7 @@ export default function Communities() {
         setUrl={setUrl}
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
+        showForm={showForm}
       />
       <LoginForm
         blur={blur}

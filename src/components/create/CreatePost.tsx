@@ -3,6 +3,8 @@ import { createPost } from "@/actions/createPost";
 import { Toaster, toast } from "sonner";
 import { useState } from "react";
 import { redirect } from "next/navigation";
+import { UploadButton } from "@/app/utils/uploadthing";
+
 interface CreatePost {
   categoryId?: string;
 }
@@ -44,6 +46,18 @@ export default function CreatePost({ categoryId }: CreatePost) {
                 ></input>
               </div>
             </div>
+            <UploadButton
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                // Do something with the response
+                console.log("Files: ", res);
+                alert("Upload Completed");
+              }}
+              onUploadError={(error: Error) => {
+                // Do something with the error.
+                alert(`ERROR! ${error.message}`);
+              }}
+            />
             <div className="flex flex-col justify-center items-start gap-3 w-full">
               <h4 className="font-semibold text-sm text-gray">Text</h4>
               <input

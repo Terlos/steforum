@@ -6,6 +6,7 @@ import { useState } from "react";
 import { logout } from "@/auth";
 import { usePathname } from "next/navigation";
 import { Toaster, toast } from "sonner";
+import { LoginForm } from "./LoginForm";
 interface Navbar {
   blur: () => void;
   blurState: Boolean;
@@ -16,6 +17,7 @@ interface Navbar {
   category?: any;
   categoryRoomId?: string;
   commentId?: string;
+  showForm?: () => void;
 }
 
 export function Navbar({
@@ -28,9 +30,10 @@ export function Navbar({
   category,
   categoryRoomId,
   commentId,
+  showForm,
 }: Navbar) {
   const [btnName, setBtnName] = useState<String>("Newest");
-  const [show, setShow] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [showProf, setShowProf] = useState(false);
 
   const pathname = usePathname();
@@ -71,23 +74,55 @@ export function Navbar({
                       Post
                     </h1>
                   </Link>
-                  <Link href={"/communities/addCommunities"}>
-                    <h1 className="hover:cursor-pointer font-semibold text-gray py-1 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg">
-                      Add community
-                    </h1>
-                  </Link>
+                  {pathname === "/communities" && isLoggedIn == true ? (
+                    <Link href={"/communities/addCommunities"}>
+                      <h1 className="hover:cursor-pointer font-semibold text-gray py-1 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg">
+                        Add community
+                      </h1>
+                    </Link>
+                  ) : (
+                    pathname === "/communities" && (
+                      <>
+                        <h1
+                          onClick={() => {
+                            blur();
+                            toast(
+                              "You have to be logged in to create community"
+                            );
+                          }}
+                          className="hover:cursor-pointer font-semibold text-gray py-1 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg"
+                        >
+                          Add community
+                        </h1>
+                      </>
+                    )
+                  )}
                 </>
               )}
 
-              {pathname.startsWith("/categoryRoom") && (
+              {pathname.startsWith("/categoryRoom") && isLoggedIn == true ? (
                 <Link href={`/categoryRoom/${categoryRoomId}/addPost`}>
                   <h1 className="hover:cursor-pointer font-semibold text-gray py-1 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg">
                     Add post
                   </h1>
                 </Link>
+              ) : (
+                pathname.startsWith("/categoryRoom") && (
+                  <>
+                    <h1
+                      onClick={() => {
+                        blur();
+                        toast("You have to be logged in to create post");
+                      }}
+                      className="hover:cursor-pointer font-semibold text-gray py-1 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg"
+                    >
+                      Add post
+                    </h1>
+                  </>
+                )
               )}
 
-              {pathname.startsWith("/comments") && (
+              {pathname.startsWith("/comments") && isLoggedIn == true ? (
                 <Link
                   href={`/comments/${categoryRoomId}/${commentId}/addComment`}
                 >
@@ -95,6 +130,20 @@ export function Navbar({
                     Add comment
                   </h1>
                 </Link>
+              ) : (
+                pathname.startsWith("/comments") && (
+                  <>
+                    <h1
+                      onClick={() => {
+                        blur();
+                        toast("You have to be logged in to create comment");
+                      }}
+                      className="hover:cursor-pointer font-semibold text-gray py-1 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg"
+                    >
+                      Add comment
+                    </h1>
+                  </>
+                )
               )}
             </div>
             {pathname.endsWith("/addCommunities") ||
@@ -104,12 +153,12 @@ export function Navbar({
               <div className="flex flex-row justify-between items-center relative w-[10rem]">
                 <h2 className="font-semibold text-gray px-1">Sort by:</h2>
                 <button
-                  onClick={() => setShow(!show)}
+                  onClick={() => setShowMenu(!showMenu)}
                   className="rounded-lg border-none font-semibold text-gray hover:bg-light-gray px-3 py-1"
                 >
                   {btnName}
                 </button>
-                {show && (
+                {showMenu && (
                   <div className="absolute flex flex-col gap-2 justify-center items-start top-9 left-[5rem] bg-white rounded-lg">
                     {BTNDATA.filter((item) => item.name !== btnName).map(
                       (item) => (
@@ -118,7 +167,7 @@ export function Navbar({
                           onClick={() => {
                             setUrl(item.change);
                             setBtnName(item.name);
-                            setShow(false);
+                            setShowMenu(false);
                           }}
                           className="flex flex-row justify-center items-center font-semibold text-gray cursor-pointer px-3 py-2 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg"
                         >
@@ -179,7 +228,6 @@ export function Navbar({
           )}
         </div>
       </div>
-      <Toaster />
     </div>
   );
 }

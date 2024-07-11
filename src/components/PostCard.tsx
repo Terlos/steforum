@@ -6,12 +6,15 @@ import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import Link from "next/link";
 import { updatePostLikes } from "@/actions/updatePostLikes";
+import { toast } from "sonner";
 
 interface postInterface {
   url: string;
   blurState: Boolean;
   setShowCom: (item: any) => void;
   showCom: Boolean;
+  isLoggedIn?: Boolean;
+  blur: () => void;
 }
 interface Post {
   id: string;
@@ -32,6 +35,8 @@ export function PostCard({
   blurState,
   setShowCom,
   showCom,
+  isLoggedIn,
+  blur,
 }: postInterface) {
   const [POSTS, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,18 +73,23 @@ export function PostCard({
   }, [url]);
 
   function addLike(isLiked: Boolean, id: string) {
-    setPosts((prevPosts) =>
-      prevPosts.map((post) =>
-        post.id === id
-          ? {
-              ...post,
-              like: isLiked ? post.like - 1 : post.like + 1,
-              isLiked: !post.isLiked,
-            }
-          : post
-      )
-    );
-    updatePostLikes(id);
+    if (isLoggedIn) {
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === id
+            ? {
+                ...post,
+                like: isLiked ? post.like - 1 : post.like + 1,
+                isLiked: !post.isLiked,
+              }
+            : post
+        )
+      );
+      updatePostLikes(id);
+    } else {
+      blur();
+      toast("You have to be logged in to like post");
+    }
   }
 
   return (

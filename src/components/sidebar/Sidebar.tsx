@@ -15,6 +15,7 @@ export function SideBar({ blurState }: SideBar) {
   const [openIndices, setOpenIndices] = useState<number[]>([]);
   const [recent, setRecent] = useState([]);
   const [likePost, setLikePost] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const toggleSection = (index: number) => {
     if (openIndices.includes(index)) {
@@ -42,9 +43,11 @@ export function SideBar({ blurState }: SideBar) {
       .then((data) => {
         const result = data.filter((item: any) => item.parentId == null);
         setLikePost(result);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching posts:", error);
+        setLoading(false);
       });
   }
 
@@ -65,7 +68,12 @@ export function SideBar({ blurState }: SideBar) {
               getLikes={getLikes}
             />
             {openIndices.includes(index) && (
-              <SectionItems index={index} recent={recent} likePost={likePost} />
+              <SectionItems
+                index={index}
+                recent={recent}
+                likePost={likePost}
+                loading={loading}
+              />
             )}
           </div>
         ))}
