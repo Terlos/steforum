@@ -7,7 +7,7 @@ type ResponseData = {
     message: string
 }
 
-export const createCategory = async(formData:FormData) =>{
+export const createCategory = async(formData:FormData, imageUrl: string) =>{
     const category = formData.get("category") as string;
     const session = await getSession();
 
@@ -17,6 +17,7 @@ export const createCategory = async(formData:FormData) =>{
         data: {
           name: category,
           authorId: id,
+          imageUrl: imageUrl,
         },
       });
 }

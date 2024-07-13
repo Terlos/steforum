@@ -7,7 +7,7 @@ type ResponseData = {
     message: string
 }
 
-export const createComment = async (formData: FormData, parentId: string, categoryId: string) => {
+export const createComment = async (formData: FormData, parentId: string, categoryId: string, imageUrl:string) => {
   const text = formData.get("text") as string;
   const session = await getSession();
 
@@ -27,6 +27,7 @@ export const createComment = async (formData: FormData, parentId: string, catego
       authorId: authorId,
       parentId: parentId,
       categoryId: categoryId,
+      imageUrl: imageUrl,
     },
   });
 

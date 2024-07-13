@@ -19,6 +19,7 @@ interface Post {
   author: any;
   comments: any;
   posts: any;
+  imageUrl: string;
 }
 
 export function Comments({ id, blurState, setCategory, url }: CommentsProps) {
@@ -83,6 +84,17 @@ export function Comments({ id, blurState, setCategory, url }: CommentsProps) {
                 <div>
                   <p className="text-sm font-medium text-gray">{item.text}</p>
                 </div>
+                {item.imageUrl && (
+                  <div className="flex flex-row justify-center items-center w-full">
+                    <Image
+                      width={650}
+                      height={650}
+                      className="rounded-lg"
+                      src={item.imageUrl}
+                      alt="Post pic"
+                    />
+                  </div>
+                )}
               </div>
               <div className="flex flex-row justify-center items-center gap-1">
                 <p className="text-gray text-sm">{item.like} likes</p>

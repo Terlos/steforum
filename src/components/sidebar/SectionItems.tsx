@@ -53,7 +53,7 @@ export function SectionItems({
           .slice(0, 5)
           .map((recentItem: any) => (
             <Link
-              href={`/comments/${recentItem.categoryId}/${recentItem.id}`}
+              href={`/favourite/${recentItem.categoryId}/${recentItem.id}`}
               key={recentItem.id}
             >
               <div className="border-l-2 border-light-gray hover:border-mid-gray py-2 hover:bg-light-gray px-4 rounded-r-2xl">

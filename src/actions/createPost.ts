@@ -7,11 +7,11 @@ type ResponseData = {
     message: string
 }
 
-export const createPost = async(formData:FormData, categoryId: string) =>{
+export const createPost = async(formData:FormData, categoryId: string, imageUrl: string) =>{
     const title = formData.get("title") as string;
     const text = formData.get("text") as string;
     const session = await getSession();
-
+    console.log(imageUrl);
     const authorId = session?.user.id;
 
     const createCategory = await prisma.post.create({
@@ -21,6 +21,7 @@ export const createPost = async(formData:FormData, categoryId: string) =>{
           authorId: authorId,
           categoryId: categoryId,
           like: 0,
+          imageUrl: imageUrl,
         },
       });
 }

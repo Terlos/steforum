@@ -39,6 +39,7 @@ model Category {
     author    User     @relation(fields: [authorId], references: [id])
     authorId  String
     posts     Post[]
+    imageUrl  String?
 }
 
 model Post {
@@ -47,8 +48,8 @@ model Post {
     updatedAt  DateTime @updatedAt
     title      String?
     like       Int      @default(0)
-    isLiked    Boolean  @default(false)
     text       String?
+    imageUrl   String?
     author     User     @relation(fields: [authorId], references: [id])
     authorId   String
     category   Category @relation(fields: [categoryId], references: [id])

@@ -3,12 +3,17 @@ import { Navbar } from "@/components/Navbar";
 import { useState, useEffect } from "react";
 import { CategoryCard } from "@/components/category/CategoryCard";
 import { getSession, login, logout } from "@/auth";
-import { SideBar } from "@/components/sidebar/Sidebar";
-import { RegisterForm } from "@/components/RegisterForm";
 import { LoginForm } from "@/components/LoginForm";
+import { RegisterForm } from "@/components/RegisterForm";
+import { SideBar } from "@/components/sidebar/Sidebar";
 import { PostCard } from "@/components/PostCard";
 
-export function Favourite() {
+export default function Favourite({
+  params,
+}: {
+  params: { categoryId: string; postId: string };
+}) {
+  const { categoryId, postId } = params;
   const [blurState, setBluerState] = useState(false);
   const [show, setShow] = useState(false);
   const [change, setChange] = useState("post");
@@ -65,6 +70,10 @@ export function Favourite() {
           blurState={blurState}
           setShowCom={setShowCom}
           showCom={showCom}
+          isLoggedIn={isLoggedIn}
+          blur={blur}
+          categoryId={categoryId}
+          postId={postId}
         />
       </div>
     </main>

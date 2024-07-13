@@ -1,12 +1,12 @@
 "use client";
 import Image from "next/image";
 import profile from "/public/profile.png";
-import placeholder from "/public/brikule.webp";
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import Link from "next/link";
 import { updatePostLikes } from "@/actions/updatePostLikes";
 import { toast } from "sonner";
+import { usePathname } from "next/navigation";
 
 interface postInterface {
   url: string;
@@ -15,6 +15,8 @@ interface postInterface {
   showCom: Boolean;
   isLoggedIn?: Boolean;
   blur: () => void;
+  categoryId: string;
+  postId: string;
 }
 interface Post {
   id: string;
@@ -28,6 +30,7 @@ interface Post {
   categoryId: string;
   category: any;
   isLiked: Boolean;
+  imageUrl: string;
 }
 
 export function PostCard({
@@ -37,38 +40,69 @@ export function PostCard({
   showCom,
   isLoggedIn,
   blur,
+  categoryId,
+  postId,
 }: postInterface) {
   const [POSTS, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const filteredData = DATA.find((item) => item.name === url);
-    if (filteredData) {
-      const { url: apiUrl } = filteredData;
-      fetch(apiUrl, {
-        method: "POST",
-      })
-        .then((r) => r.json())
-        .then((data) => {
-          console.log("post", data);
-          const result = data.filter((item: any) => item.parentId == null);
-          const postsWithFormattedDate = result.map((post: Post) => ({
-            ...post,
-            createdAt: new Date(post.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            }),
-          }));
-          setPosts(postsWithFormattedDate);
-          setLoading(false);
+    if (pathname.startsWith("/favourite")) {
+      const handleSubmit = async (categoryId: string, postId: string) => {
+        fetch("http://localhost:3000/api/post/favourite", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ categoryId: categoryId, postId: postId }),
         })
-        .catch((error) => {
-          console.error("Error fetching posts:", error);
-          setError("Error fetching posts. Please try again later.");
-          setLoading(false);
-        });
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Response data:", data.posts); // Log the parsed JSON data
+            setPosts(data.posts);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+            setLoading(false);
+          });
+      };
+      handleSubmit(categoryId, postId);
+    } else {
+      const filteredData = DATA.find((item) => item.name === url);
+      if (filteredData) {
+        const { url: apiUrl } = filteredData;
+        fetch(apiUrl, {
+          method: "POST",
+        })
+          .then((r) => r.json())
+          .then((data) => {
+            const result = data.filter((item: any) => item.parentId == null);
+            const postsWithFormattedDate = result.map((post: Post) => ({
+              ...post,
+              createdAt: new Date(post.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              }),
+            }));
+            setLoading(false);
+            setPosts(postsWithFormattedDate);
+          })
+
+          .catch((error) => {
+            console.error("Error fetching posts:", error);
+            setError("Error fetching posts. Please try again later.");
+            setLoading(false);
+          });
+      }
     }
   }, [url]);
 
@@ -88,7 +122,7 @@ export function PostCard({
       updatePostLikes(id);
     } else {
       blur();
-      toast("You have to be logged in to like post");
+      toast("You have to be logged in to like the post");
     }
   }
 
@@ -133,13 +167,17 @@ export function PostCard({
                   <p className="text-sm text-gray">{item.text}</p>
                 </div>
               </div>
-              <div className="flex flex-row justify-center items-center w-full">
-                <Image
-                  className="rounded-lg"
-                  src={placeholder}
-                  alt="Post pic"
-                />
-              </div>
+              {item.imageUrl && (
+                <div className="flex flex-row justify-center items-center w-full">
+                  <Image
+                    width={650}
+                    height={650}
+                    className="rounded-lg"
+                    src={item.imageUrl}
+                    alt="Post pic"
+                  />
+                </div>
+              )}
               <div className="flex flex-row justify-center items-center gap-1">
                 <p
                   onClick={() => {

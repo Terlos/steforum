@@ -11,20 +11,22 @@ interface CreatePost {
 export default function CreatePost({ categoryId }: CreatePost) {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
+  const [imageUrl, setImageUrl] = useState<string>("");
   function clearHandler() {
     setTitle("");
     setText("");
   }
+
   return (
     <>
       <form
         onSubmit={() => {
           clearHandler;
-          toast("Post byl vytvořen");
+          toast("Post has been created");
         }}
         action={async (formData) => {
           if (categoryId) {
-            await createPost(formData, categoryId);
+            await createPost(formData, categoryId, imageUrl);
             redirect(`/categoryRoom/${categoryId}`);
           }
         }}
@@ -46,18 +48,23 @@ export default function CreatePost({ categoryId }: CreatePost) {
                 ></input>
               </div>
             </div>
-            <UploadButton
-              endpoint="imageUploader"
-              onClientUploadComplete={(res) => {
-                // Do something with the response
-                console.log("Files: ", res);
-                alert("Upload Completed");
-              }}
-              onUploadError={(error: Error) => {
-                // Do something with the error.
-                alert(`ERROR! ${error.message}`);
-              }}
-            />
+            <div className="flex flex-col justify-center items-start gap-3 w-full">
+              <h4 className="font-semibold text-sm text-gray">Add image</h4>
+              <UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  if (res.length > 0) {
+                    const url = res[0].url; // Adjust based on the actual property
+                    setImageUrl(url);
+                  }
+                  console.log("Files: ", res);
+                }}
+                onUploadError={(error: Error) => {
+                  // Do something with the error.
+                  alert(`ERROR! ${error.message}`);
+                }}
+              />
+            </div>
             <div className="flex flex-col justify-center items-start gap-3 w-full">
               <h4 className="font-semibold text-sm text-gray">Text</h4>
               <input
@@ -67,7 +74,7 @@ export default function CreatePost({ categoryId }: CreatePost) {
                 type="text"
                 name="text"
                 className="w-full rounded-lg h-10 border-gray border place-content-start pl-2  text-gray text-sm"
-                placeholder="Rád sportuji...."
+                placeholder="I like sport...."
               ></input>
             </div>
             <button

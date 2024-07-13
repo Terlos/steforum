@@ -18,8 +18,20 @@ export const updatePostLikes = async(postId: string) => {
           authorId: userId,
           postId: postId,
         },
-      });     
- 
+      });    
+
+      
+      const getPost = await prisma.post.findFirst({
+        where: {
+            id: postId,
+        },
+        select: {
+            like: true,
+        },
+    });
+
+
+
     if(!existPost){
         const liked = await prisma.liked.create({
             data: {
@@ -27,15 +39,6 @@ export const updatePostLikes = async(postId: string) => {
               postId: postId,
             },
           });
-
-          const getPost = await prisma.post.findFirst({
-            where: {
-                id: postId,
-            },
-            select: {
-                like: true,
-            },
-        });
         
         if (getPost) {
             const newLikeCount = getPost.like + 1;
@@ -47,7 +50,6 @@ export const updatePostLikes = async(postId: string) => {
                 data: {
                     like: newLikeCount,
                     authorId: userId,
-                    isLiked: true,
                 },
             });
             
@@ -60,15 +62,6 @@ export const updatePostLikes = async(postId: string) => {
           postId: postId,
         },
       });
-
-    const getPost = await prisma.post.findFirst({
-        where: {
-            id: postId,
-        },
-        select: {
-            like: true,
-        },
-    });
     
     if (getPost) {
         const newLikeCount = getPost.like - 1;
@@ -80,10 +73,9 @@ export const updatePostLikes = async(postId: string) => {
             data: {
                 like: newLikeCount,
                 authorId: userId,
-                isLiked: false,
             },
         });
-        
+
     return updatePost;
     }
 }

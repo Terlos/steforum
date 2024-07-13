@@ -12,6 +12,7 @@ interface Category {
   like: number;
   author: any;
   posts: any;
+  imageUrl: string;
 }
 
 interface communityInterface {
@@ -119,7 +120,7 @@ export function CategoryCard({ url, blurState }: communityInterface) {
             <Image
               height={150}
               width={180}
-              src={placeholder}
+              src={item.imageUrl}
               alt="Post pic"
               className="border rounded-lg"
             />
