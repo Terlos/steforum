@@ -9,7 +9,7 @@ import CreateCommunity from "@/components/create/CreateCommunity";
 import { Profile } from "@/components/Profile";
 
 interface MainPage {}
-export default function addCommunities() {
+export default function AddCommunities() {
   const [blurState, setBluerState] = useState(false);
   const [show, setShow] = useState(false);
   const [change, setChange] = useState("post");
