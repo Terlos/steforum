@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../lib/prisma';
 
 type ResponseData = {
@@ -6,8 +6,8 @@ type ResponseData = {
 }
  
 export async function POST(
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  req: NextRequest,
+  res: NextResponse<ResponseData>
 ) {
     const resultPosts = await prisma.category.findMany({
       include: {
@@ -18,5 +18,5 @@ export async function POST(
         createdAt: 'desc',
       },
     })
-    return Response.json(resultPosts)
+    return NextResponse.json(resultPosts)
 }
