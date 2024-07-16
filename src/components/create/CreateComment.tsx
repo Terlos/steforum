@@ -10,7 +10,7 @@ interface CreateComment {
   categoryId: string;
   showProfile: Boolean;
 }
-export default function CreateComment({
+export function CreateComment({
   commentId,
   categoryId,
   showProfile,

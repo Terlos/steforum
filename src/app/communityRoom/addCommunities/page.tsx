@@ -5,7 +5,7 @@ import { getSession } from "@/auth";
 import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
-import CreateCommunity from "@/components/create/CreateCommunity";
+import { CreateCommunity } from "@/components/create/CreateCommunity";
 import { Profile } from "@/components/Profile";
 
 interface MainPage {}

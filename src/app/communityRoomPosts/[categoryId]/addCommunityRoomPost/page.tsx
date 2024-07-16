@@ -9,7 +9,7 @@ import { AddCommunityRoomPost } from "@/components/create/AddCommunityRoomPost";
 import { Profile } from "@/components/Profile";
 
 interface MainPage {}
-export default function addCommunityPost({
+export default function AddCommunityPost({
   params,
 }: {
   params: { categoryId: string };

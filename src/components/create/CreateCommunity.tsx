@@ -8,7 +8,7 @@ import { UploadButton } from "@/app/utils/uploadthing";
 interface CreateCommunity {
   showProfile: Boolean;
 }
-export default function CreateCommunity({ showProfile }: CreateCommunity) {
+export function CreateCommunity({ showProfile }: CreateCommunity) {
   const [category, setCategory] = useState("");
   const [imageUrl, setImageUrl] = useState<string>("");
 

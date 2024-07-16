@@ -5,11 +5,11 @@ import { getSession } from "@/auth";
 import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
-import CreateComment from "@/components/create/CreateComment";
+import { CreateComment } from "@/components/create/CreateComment";
 import { Profile } from "@/components/Profile";
 
 interface MainPage {}
-export default function addPost({
+export default function AddPost({
   params,
 }: {
   params: { categoryId: string; parentId: string };
