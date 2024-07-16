@@ -11,9 +11,10 @@ import { Post } from "@/app/utils/types/types";
 interface SideBar {
   blurState: Boolean;
   isLoggedIn?: Boolean;
+  showProfile?: Boolean;
 }
 
-export function SideBar({ blurState, isLoggedIn }: SideBar) {
+export function SideBar({ blurState, isLoggedIn, showProfile }: SideBar) {
   const [openIndices, setOpenIndices] = useState<number[]>([]);
   const [recent, setRecent] = useState([]);
   const [likePost, setLikePost] = useState([]);
@@ -59,7 +60,11 @@ export function SideBar({ blurState, isLoggedIn }: SideBar) {
   }
 
   return (
-    <div className={`w-full ${blurState ? "blur" : " "}`}>
+    <div
+      className={`w-full ${blurState ? "blur" : " "} ${
+        showProfile ? "blur" : ""
+      }`}
+    >
       <div
         className="flex sticky top-36 flex-col bg-white w-64 rounded-tr-2xl px-6 pt-6 gap-2 h-screen-without-header overflow-y-scroll overflow-x-hidden
       scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thumb-gray scrollbar-w-2 scroll-smooth  scrollbar"

@@ -8,10 +8,12 @@ import { UploadButton } from "@/app/utils/uploadthing";
 interface CreateComment {
   commentId?: string;
   categoryId: string;
+  showProfile: Boolean;
 }
 export default function CreateComment({
   commentId,
   categoryId,
+  showProfile,
 }: CreateComment) {
   const [text, setText] = useState("");
   function clearHandler() {
@@ -31,7 +33,9 @@ export default function CreateComment({
             redirect(`/comments/${categoryId}/${commentId}`);
           }
         }}
-        className={`flex flex-row justify-center items-start px-4 md:px-0 left-11 right-0 top-36 w-full`}
+        className={`${
+          showProfile ? "blur" : ""
+        } flex flex-row justify-center items-start px-4 md:px-0 left-11 right-0 top-36 w-full`}
       >
         <div className="flex flex-col justify-center items-center bg-white md:w-98 max-w-98 rounded-lg px-5 py-6 w-2/4">
           <div className="flex flex-col justify-center items-start gap-5 w-full">

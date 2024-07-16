@@ -22,6 +22,7 @@ interface communityInterface {
   setDbValue: (item: Category[]) => void;
   activeSearch: Category[] | Post[];
   clear: string;
+  showProfile: Boolean;
 }
 
 export function CommunityRoom({
@@ -30,6 +31,7 @@ export function CommunityRoom({
   setDbValue,
   activeSearch,
   clear,
+  showProfile,
 }: communityInterface) {
   const [CATEGORY, setCategory] = useState<Category[] | Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -105,7 +107,7 @@ export function CommunityRoom({
     <div
       className={`flex flex-col justify-start items-center gap-6 ${
         blurState ? "blur" : " "
-      }`}
+      } ${showProfile ? "blur" : ""}`}
     >
       {loading ? (
         <p>Loading...</p>
@@ -123,7 +125,13 @@ export function CommunityRoom({
           >
             <div className="flex flex-col justify-center items-start gap-1">
               <div className="flex flex-row justify-center items-center gap-3">
-                <Image src={profile} alt="Profile pic" />
+                <Image
+                  width={24}
+                  height={24}
+                  src={String(item.author.imageUrl)}
+                  alt="Profile pic"
+                  className="rounded-full w-6 h-6"
+                />
                 <h1 className="text-xs font-medium text-gray">
                   {item.author.name}
                 </h1>
@@ -151,10 +159,10 @@ export function CommunityRoom({
               </div>
             </div>
             {item.imageUrl && (
-              <div className="flex flex-row justify-center items-center w-full">
+              <div className="flex flex-row justify-center items-center">
                 <Image
-                  width={650}
-                  height={650}
+                  width={160}
+                  height={120}
                   className="rounded-lg"
                   src={item.imageUrl}
                   alt="Post pic"

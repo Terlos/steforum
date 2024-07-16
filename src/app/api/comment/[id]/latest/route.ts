@@ -25,6 +25,7 @@ export async function POST(
             select: {
               name: true, // Include the author's name
               email: true,
+              imageUrl: true
             },
           },
         },

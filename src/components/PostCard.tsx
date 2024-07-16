@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import profile from "/public/profile.png";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import Link from "next/link";
@@ -21,6 +20,7 @@ interface postInterface {
   setDbValue: Dispatch<SetStateAction<Post[]>>;
   activeSearch: Post[];
   clear: string;
+  showProfile: Boolean;
 }
 
 export function PostCard({
@@ -34,6 +34,7 @@ export function PostCard({
   setDbValue,
   activeSearch,
   clear,
+  showProfile,
 }: postInterface) {
   const [POSTS, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -139,7 +140,7 @@ export function PostCard({
     <div
       className={`flex flex-col justify-start items-center gap-6 ${
         blurState ? "blur" : ""
-      }`}
+      } ${showProfile ? "blur" : ""} `}
     >
       {loading ? (
         <p>Loading...</p>
@@ -151,12 +152,20 @@ export function PostCard({
         POSTS.map((item) => (
           <div
             key={item.id}
-            className="flex flex-col justify-center items-center w-3/5 bg-white rounded-3xl px-10 py-4"
+            className={`${
+              showProfile ? "blur" : ""
+            } flex flex-col justify-center items-center w-3/5 bg-white rounded-3xl px-10 py-4`}
           >
             <div className="flex flex-col justify-center items-start w-full gap-6">
               <div className="flex flex-col justify-center items-start gap-4">
                 <div className="flex flex-row justify-center items-center gap-3">
-                  <Image src={profile} alt="Profile pic" />
+                  <Image
+                    width={24}
+                    height={24}
+                    src={String(item.author.imageUrl)}
+                    alt="Profile pic"
+                    className="rounded-full w-6 h-6"
+                  />
                   <h1 className="text-xs font-medium text-gray">
                     {item.author.name}
                   </h1>

@@ -4,6 +4,7 @@ export interface Author {
   name: string;
   password: string;
   role: string;
+  imageUrl: String;
 }
 
 export interface Category {

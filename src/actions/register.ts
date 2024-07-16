@@ -24,6 +24,7 @@ export const registerForm = async(formData:FormData) =>{
             email: email,
             password: password,
             banned: false,
+            imageUrl: ""
           },
         });
     }else{

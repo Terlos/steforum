@@ -7,6 +7,7 @@ import { CommunityRoomPosts } from "@/components/category/CommunityRoomPosts";
 import { getSession } from "@/auth";
 import { Navbar } from "@/components/Navbar";
 import { Category, Post } from "@/app/utils/types/types";
+import { Profile } from "@/components/Profile";
 export default function CategoryRoom({
   params,
 }: {
@@ -19,6 +20,7 @@ export default function CategoryRoom({
   const [category, setCategory] = useState<Category[]>([]);
   const [showCom, setShowCom] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -34,6 +36,10 @@ export default function CategoryRoom({
 
   function showForm() {
     setShow(!show);
+  }
+
+  function showProfileHandler() {
+    showProfile ? setShowProfile(false) : setShowProfile(true);
   }
 
   const [dbValue, setDbValue] = useState<Post[]>([]);
@@ -53,6 +59,8 @@ export default function CategoryRoom({
         setActiveSearch={setActiveSearch}
         setClear={setClear}
         clear={clear}
+        showProfileHandler={showProfileHandler}
+        showProfile={showProfile}
       />
       <LoginForm
         blur={blur}
@@ -66,8 +74,16 @@ export default function CategoryRoom({
         showForm={showForm}
         show={show}
       />
+      <Profile
+        showProfile={showProfile}
+        showProfileHandler={showProfileHandler}
+      />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} isLoggedIn={isLoggedIn} />
+        <SideBar
+          blurState={blurState}
+          isLoggedIn={isLoggedIn}
+          showProfile={showProfile}
+        />
         <CommunityRoomPosts
           category={category}
           url={url}
@@ -81,6 +97,7 @@ export default function CategoryRoom({
           setDbValue={setDbValue}
           activeSearch={activeSearch}
           clear={clear}
+          showProfile={showProfile}
         />
       </div>
     </main>

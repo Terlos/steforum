@@ -7,6 +7,7 @@ import { Comments } from "@/components/Comments";
 import { getSession } from "@/auth";
 import { Navbar } from "@/components/Navbar";
 import { Post } from "@/app/utils/types/types";
+import { Profile } from "@/components/Profile";
 
 export default function CommentsPage({
   params,
@@ -18,6 +19,7 @@ export default function CommentsPage({
   const [show, setShow] = useState(false);
   const [url, setUrl] = useState("all");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -33,6 +35,10 @@ export default function CommentsPage({
 
   function showForm() {
     setShow(!show);
+  }
+
+  function showProfileHandler() {
+    showProfile ? setShowProfile(false) : setShowProfile(true);
   }
 
   const [dbValue, setDbValue] = useState<Post[]>([]);
@@ -53,6 +59,8 @@ export default function CommentsPage({
         setActiveSearch={setActiveSearch}
         setClear={setClear}
         clear={clear}
+        showProfileHandler={showProfileHandler}
+        showProfile={showProfile}
       />
       <LoginForm
         blur={blur}
@@ -66,13 +74,22 @@ export default function CommentsPage({
         showForm={showForm}
         show={show}
       />
+      <Profile
+        showProfile={showProfile}
+        showProfileHandler={showProfileHandler}
+      />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} />
+        <SideBar
+          blurState={blurState}
+          isLoggedIn={isLoggedIn}
+          showProfile={showProfile}
+        />
         <Comments
           blurState={blurState}
           id={parentId}
           url={url}
           isLoggedIn={isLoggedIn}
+          showProfile={showProfile}
         />
       </div>
     </main>

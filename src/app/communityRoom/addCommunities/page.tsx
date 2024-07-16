@@ -6,6 +6,7 @@ import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
 import CreateCommunity from "@/components/create/CreateCommunity";
+import { Profile } from "@/components/Profile";
 
 interface MainPage {}
 export default function addCommunities() {
@@ -14,6 +15,7 @@ export default function addCommunities() {
   const [change, setChange] = useState("post");
   const [url, setUrl] = useState("category");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -35,6 +37,10 @@ export default function addCommunities() {
     setChange(item);
   }
 
+  function showProfileHandler() {
+    showProfile ? setShowProfile(false) : setShowProfile(true);
+  }
+
   const [dbValue, setDbValue] = useState<any>([]);
   const [activeSearch, setActiveSearch] = useState<any>([]);
   const [clear, setClear] = useState("");
@@ -51,6 +57,8 @@ export default function addCommunities() {
         setActiveSearch={activeSearch}
         clear={clear}
         setClear={setClear}
+        showProfileHandler={showProfileHandler}
+        showProfile={showProfile}
       />
       <LoginForm
         blur={blur}
@@ -64,9 +72,17 @@ export default function addCommunities() {
         showForm={showForm}
         show={show}
       />
+      <Profile
+        showProfile={showProfile}
+        showProfileHandler={showProfileHandler}
+      />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} />
-        <CreateCommunity />
+        <SideBar
+          blurState={blurState}
+          isLoggedIn={isLoggedIn}
+          showProfile={showProfile}
+        />
+        <CreateCommunity showProfile={showProfile} />
       </div>
     </main>
   );

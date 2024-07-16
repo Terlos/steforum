@@ -7,6 +7,7 @@ import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
 import { Post, Author } from "@/app/utils/types/types";
+import { Profile } from "@/components/Profile";
 
 interface Category {
   id: number;
@@ -26,7 +27,8 @@ export default function Communities() {
   const [url, setUrl] = useState("category");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
   const [showCom, setShowCom] = useState(true);
-  // Check if user is logged in on component mount
+  const [showProfile, setShowProfile] = useState(false);
+
   useEffect(() => {
     const checkSession = async () => {
       const session = await getSession();
@@ -43,8 +45,12 @@ export default function Communities() {
     show ? setShow(false) : setShow(true);
   }
 
+  function showProfileHandler() {
+    showProfile ? setShowProfile(false) : setShowProfile(true);
+  }
+
   const [dbValue, setDbValue] = useState<Array<Post | Category>>([]);
-  const [activeSearch, setActiveSearch] = useState<Category[]>([]);
+  const [activeSearch, setActiveSearch] = useState<Category[] | Post[]>([]);
   const [clear, setClear] = useState("");
 
   return (
@@ -60,6 +66,8 @@ export default function Communities() {
         setActiveSearch={setActiveSearch}
         setClear={setClear}
         clear={clear}
+        showProfileHandler={showProfileHandler}
+        showProfile={showProfile}
       />
       <LoginForm
         blur={blur}
@@ -73,14 +81,23 @@ export default function Communities() {
         showForm={showForm}
         show={show}
       />
+      <Profile
+        showProfile={showProfile}
+        showProfileHandler={showProfileHandler}
+      />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} isLoggedIn={isLoggedIn} />
+        <SideBar
+          blurState={blurState}
+          isLoggedIn={isLoggedIn}
+          showProfile={showProfile}
+        />
         <CommunityRoom
           blurState={blurState}
           url={url}
           setDbValue={setDbValue}
           activeSearch={activeSearch}
           clear={clear}
+          showProfile={showProfile}
         />
       </div>
     </main>

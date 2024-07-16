@@ -11,7 +11,6 @@ export const createPost = async(formData:FormData, categoryId: string, imageUrl:
     const title = formData.get("title") as string;
     const text = formData.get("text") as string;
     const session = await getSession();
-    console.log(imageUrl);
     const authorId = session?.user.id;
 
     const createCategory = await prisma.post.create({

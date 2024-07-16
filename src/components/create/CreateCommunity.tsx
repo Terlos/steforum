@@ -5,7 +5,10 @@ import { useState } from "react";
 import { redirect } from "next/navigation";
 import { UploadButton } from "@/app/utils/uploadthing";
 
-export default function CreateCommunity() {
+interface CreateCommunity {
+  showProfile: Boolean;
+}
+export default function CreateCommunity({ showProfile }: CreateCommunity) {
   const [category, setCategory] = useState("");
   const [imageUrl, setImageUrl] = useState<string>("");
 
@@ -23,7 +26,9 @@ export default function CreateCommunity() {
           await createCommunity(formData, imageUrl);
           redirect("/communityRoom");
         }}
-        className={`flex flex-row justify-center items-start px-4 md:px-0 left-11 right-0 top-36 w-full`}
+        className={`${
+          showProfile ? "blur" : ""
+        } flex flex-row justify-center items-start px-4 md:px-0 left-11 right-0 top-36 w-full`}
       >
         <div className="flex flex-col justify-center items-center bg-white md:w-98 max-w-98 rounded-lg px-5 py-6 w-2/4">
           <div className="flex flex-col justify-center items-center gap-5 w-full">

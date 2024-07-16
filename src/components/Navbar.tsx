@@ -6,7 +6,6 @@ import { useState } from "react";
 import { logout } from "@/auth";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
-import { Post, Category } from "@/app/utils/types/types";
 
 interface Navbar {
   blur: () => void;
@@ -21,6 +20,8 @@ interface Navbar {
   setActiveSearch: (item: any) => void;
   setClear: (item: string) => void;
   clear: string;
+  showProfileHandler?: () => void;
+  showProfile?: Boolean;
 }
 
 export function Navbar({
@@ -36,21 +37,22 @@ export function Navbar({
   setActiveSearch,
   setClear,
   clear,
+  showProfile,
+  showProfileHandler,
 }: Navbar) {
   const [btnName, setBtnName] = useState<String>("Newest");
   const [showMenu, setShowMenu] = useState(false);
   const [showProf, setShowProf] = useState(false);
-
   const pathname = usePathname();
   return (
     <div
-      className={` ${
+      className={` ${showProfile ? "blur" : ""} ${
         pathname.startsWith("/favourite")
           ? "h-[149.33px] items-start"
           : "items-center"
       } flex sticky top-0 flex-row justify-center w-full z-10 bg-darkWhite pb-6 ${
         blurState ? "blur" : ""
-      }`}
+      } `}
     >
       <div className="flex w-11/12 items-start justify-between pt-7">
         <div>
@@ -59,8 +61,10 @@ export function Navbar({
           </Link>
         </div>
         <div className="flex flex-col justify-center items-center w-full">
-          {!pathname.startsWith("/comments") &&
-            !pathname.startsWith("/favourite") && (
+          {!pathname.endsWith("/addComment") &&
+            !pathname.endsWith("/addCommunities") &&
+            !pathname.startsWith("/favourite") &&
+            !pathname.endsWith("/addCommunityRoomPost") && (
               <SearchBar
                 dbValue={dbValue}
                 setActiveSearch={setActiveSearch}
@@ -119,6 +123,7 @@ export function Navbar({
               )}
 
               {pathname.startsWith("/communityRoomPosts") &&
+              !pathname.endsWith("/addCommunityRoomPost") &&
               isLoggedIn == true ? (
                 <Link
                   href={`/communityRoomPosts/${categoryRoomId}/addCommunityRoomPost`}
@@ -128,7 +133,8 @@ export function Navbar({
                   </h1>
                 </Link>
               ) : (
-                pathname.startsWith("/communityRoomPosts") && (
+                pathname.startsWith("/communityRoomPosts") &&
+                !pathname.endsWith("/addCommunityRoomPost") && (
                   <>
                     <h1
                       onClick={() => {
@@ -143,7 +149,9 @@ export function Navbar({
                 )
               )}
 
-              {pathname.startsWith("/comments") && isLoggedIn == true ? (
+              {pathname.startsWith("/comments") &&
+              !pathname.endsWith("/addComment") &&
+              isLoggedIn == true ? (
                 <Link
                   href={`/comments/${categoryRoomId}/${commentId}/addComment`}
                 >
@@ -152,7 +160,8 @@ export function Navbar({
                   </h1>
                 </Link>
               ) : (
-                pathname.startsWith("/comments") && (
+                pathname.startsWith("/comments") &&
+                !pathname.endsWith("/addComment") && (
                   <>
                     <h1
                       onClick={() => {
@@ -169,7 +178,9 @@ export function Navbar({
             </div>
             {pathname.endsWith("/addCommunities") ||
             pathname.endsWith("/comments/") ||
-            pathname.startsWith("/favourite") ? (
+            pathname.startsWith("/favourite") ||
+            pathname.endsWith("/addComment") ||
+            pathname.endsWith("/addCommunityRoomPost") ? (
               <></>
             ) : (
               <div className="flex flex-row justify-between items-center relative w-[10rem]">
@@ -216,6 +227,16 @@ export function Navbar({
                   showProf ? "" : "hidden"
                 } absolute flex flex-col gap-2 justify-center items-start top-8 bg-white rounded-lg`}
               >
+                <a
+                  onClick={() => {
+                    if (showProfileHandler) {
+                      showProfileHandler();
+                    }
+                  }}
+                  className=" flex justify-center items-center flex-nowrap font-semibold text-gray cursor-pointer py-2 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg w-24"
+                >
+                  Profile
+                </a>
                 <a
                   onClick={() => {
                     toast("You have been logged out");

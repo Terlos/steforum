@@ -7,8 +7,9 @@ import { UploadButton } from "@/app/utils/uploadthing";
 
 interface CreatePost {
   categoryId?: string;
+  showProfile: Boolean;
 }
-export function AddCommunityRoomPost({ categoryId }: CreatePost) {
+export function AddCommunityRoomPost({ categoryId, showProfile }: CreatePost) {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [imageUrl, setImageUrl] = useState<string>("");
@@ -30,7 +31,9 @@ export function AddCommunityRoomPost({ categoryId }: CreatePost) {
             redirect(`/communityRoomPosts/${categoryId}`);
           }
         }}
-        className={`flex flex-row justify-center items-start px-4 md:px-0 left-11 right-0 top-36 w-full`}
+        className={`${
+          showProfile ? "blur" : ""
+        } flex flex-row justify-center items-start px-4 md:px-0 left-11 right-0 top-36 w-full`}
       >
         <div className="flex flex-col justify-center items-center bg-white md:w-98 max-w-98 rounded-lg px-5 py-6 w-2/4">
           <div className="flex flex-col justify-center items-end gap-5 w-full">

@@ -7,6 +7,7 @@ import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
 import { PostCard } from "@/components/PostCard";
 import { Post } from "@/app/utils/types/types";
+import { Profile } from "@/components/Profile";
 
 export default function Favourite({
   params,
@@ -19,6 +20,7 @@ export default function Favourite({
   const [url, setUrl] = useState("post");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
   const [showCom, setShowCom] = useState(true);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -34,6 +36,10 @@ export default function Favourite({
 
   function showForm() {
     show ? setShow(false) : setShow(true);
+  }
+
+  function showProfileHandler() {
+    showProfile ? setShowProfile(false) : setShowProfile(true);
   }
 
   const [dbValue, setDbValue] = useState<Post[]>([]);
@@ -52,6 +58,8 @@ export default function Favourite({
         setActiveSearch={setActiveSearch}
         setClear={setClear}
         clear={clear}
+        showProfileHandler={showProfileHandler}
+        showProfile={showProfile}
       />
       <LoginForm
         blur={blur}
@@ -65,8 +73,16 @@ export default function Favourite({
         showForm={showForm}
         show={show}
       />
+      <Profile
+        showProfile={showProfile}
+        showProfileHandler={showProfileHandler}
+      />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} isLoggedIn={isLoggedIn} />
+        <SideBar
+          blurState={blurState}
+          isLoggedIn={isLoggedIn}
+          showProfile={showProfile}
+        />
         <PostCard
           url={url}
           blurState={blurState}
@@ -79,6 +95,7 @@ export default function Favourite({
           setDbValue={setDbValue}
           activeSearch={activeSearch}
           clear={clear}
+          showProfile={showProfile}
         />
       </div>
     </main>

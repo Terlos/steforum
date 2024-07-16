@@ -7,14 +7,16 @@ import { RegisterForm } from "./RegisterForm";
 import { useState, useEffect } from "react";
 import { getSession } from "@/auth";
 import { Post } from "@/app/utils/types/types";
-interface MainPage {}
+import { Profile } from "@/components/Profile";
+
 export function MainPage() {
   const [blurState, setBluerState] = useState(false);
   const [show, setShow] = useState(false);
   const [url, setUrl] = useState("post");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
   const [showCom, setShowCom] = useState<Boolean>(true);
-  // Check if user is logged in on component mount
+  const [showProfile, setShowProfile] = useState(false);
+
   useEffect(() => {
     const checkSession = async () => {
       const session = await getSession();
@@ -25,6 +27,10 @@ export function MainPage() {
 
   function blur() {
     blurState ? setBluerState(false) : setBluerState(true);
+  }
+
+  function showProfileHandler() {
+    showProfile ? setShowProfile(false) : setShowProfile(true);
   }
 
   function showForm() {
@@ -46,6 +52,8 @@ export function MainPage() {
         setActiveSearch={setActiveSearch}
         setClear={setClear}
         clear={clear}
+        showProfileHandler={showProfileHandler}
+        showProfile={showProfile}
       />
       <LoginForm
         blur={blur}
@@ -59,8 +67,16 @@ export function MainPage() {
         showForm={showForm}
         show={show}
       />
+      <Profile
+        showProfile={showProfile}
+        showProfileHandler={showProfileHandler}
+      />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} isLoggedIn={isLoggedIn} />
+        <SideBar
+          blurState={blurState}
+          isLoggedIn={isLoggedIn}
+          showProfile={showProfile}
+        />
         <PostCard
           url={url}
           blurState={blurState}
@@ -71,6 +87,7 @@ export function MainPage() {
           setDbValue={setDbValue}
           activeSearch={activeSearch}
           clear={clear}
+          showProfile={showProfile}
         />
       </div>
     </main>

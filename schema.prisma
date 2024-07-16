@@ -18,6 +18,7 @@ model User {
     liked      Liked[]
     profile    Profile?
     banned     Boolean?   @default(false)
+    imageUrl   String
 }
 
 enum Role {

@@ -6,6 +6,7 @@ import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
 import CreateComment from "@/components/create/CreateComment";
+import { Profile } from "@/components/Profile";
 
 interface MainPage {}
 export default function addPost({
@@ -18,6 +19,8 @@ export default function addPost({
   const [show, setShow] = useState(false);
   const [url, setUrl] = useState("category");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+  const [showProfile, setShowProfile] = useState(false);
+
   useEffect(() => {
     const checkSession = async () => {
       const session = await getSession();
@@ -32,6 +35,10 @@ export default function addPost({
 
   function showForm() {
     show ? setShow(false) : setShow(true);
+  }
+
+  function showProfileHandler() {
+    showProfile ? setShowProfile(false) : setShowProfile(true);
   }
 
   const [dbValue, setDbValue] = useState([]);
@@ -50,6 +57,8 @@ export default function addPost({
         setActiveSearch={setActiveSearch}
         setClear={setClear}
         clear={clear}
+        showProfileHandler={showProfileHandler}
+        showProfile={showProfile}
       />
       <LoginForm
         blur={blur}
@@ -63,9 +72,21 @@ export default function addPost({
         showForm={showForm}
         show={show}
       />
+      <Profile
+        showProfile={showProfile}
+        showProfileHandler={showProfileHandler}
+      />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} />
-        <CreateComment commentId={parentId} categoryId={categoryId} />
+        <SideBar
+          blurState={blurState}
+          isLoggedIn={isLoggedIn}
+          showProfile={showProfile}
+        />
+        <CreateComment
+          commentId={parentId}
+          categoryId={categoryId}
+          showProfile={showProfile}
+        />
       </div>
     </main>
   );

@@ -20,6 +20,7 @@ interface postInterface {
   setDbValue: (item: Post[]) => void;
   activeSearch: Post[];
   clear: string;
+  showProfile: Boolean;
 }
 
 export function CommunityRoomPosts({
@@ -34,6 +35,7 @@ export function CommunityRoomPosts({
   setDbValue,
   activeSearch,
   clear,
+  showProfile,
 }: postInterface) {
   const [POSTS, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,7 +122,7 @@ export function CommunityRoomPosts({
     <div
       className={`flex flex-col justify-start items-center gap-6 ${
         blurState ? "blur" : " "
-      }`}
+      } ${showProfile ? "blur" : ""}`}
     >
       {loading ? (
         <p>Loading...</p>
@@ -137,7 +139,13 @@ export function CommunityRoomPosts({
             <div className="flex flex-col justify-center items-start w-full gap-6">
               <div className="flex flex-col justify-center items-start gap-4">
                 <div className="flex flex-row justify-center items-center gap-3">
-                  <Image src={profile} alt="Profile pic" />
+                  <Image
+                    width={24}
+                    height={24}
+                    src={String(item.author.imageUrl)}
+                    alt="Profile pic"
+                    className="rounded-full w-6 h-6"
+                  />
                   <h1 className="text-xs font-medium text-gray">
                     {item.author.name}
                   </h1>
