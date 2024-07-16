@@ -1,10 +1,10 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(
-  req: NextApiRequest,
-  res: NextApiResponse,
+  req: NextRequest,
+  res: NextResponse,
 ) {
   const session = await getSession();
   const userId = session?.user.id;
@@ -32,7 +32,7 @@ export async function POST(
   
   console.log(getLikedPosts);
   
-  return Response.json(getLikedPosts)
+  return NextResponse.json(getLikedPosts)
 }else{
   return
 }

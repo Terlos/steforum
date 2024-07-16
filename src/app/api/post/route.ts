@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../../lib/prisma';
 import { getSession } from '@/auth';
 
@@ -7,8 +7,8 @@ type ResponseData = {
 }
 
 export async function POST(
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  req: NextRequest,
+  res: NextResponse<ResponseData>
 ) {
 
   const session = await getSession();
@@ -40,5 +40,5 @@ export async function POST(
     };
   }));
   
-  return Response.json(shadowArray)
+  return NextResponse.json(shadowArray)
 }

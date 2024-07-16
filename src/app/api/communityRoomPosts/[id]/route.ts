@@ -1,9 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/auth';
 import { prisma } from '@/lib/prisma';
 
 export async function POST(
-  request: NextApiRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const slug = params.id
@@ -45,7 +45,7 @@ export async function POST(
       };
     }));
     
-    return Response.json(shadowArray)
+    return NextResponse.json(shadowArray)
     }
 
 }

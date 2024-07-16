@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 
 
 type ResponseData = {
@@ -7,8 +7,8 @@ type ResponseData = {
 }
  
 export async function POST(
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  req: NextRequest,
+  res: NextResponse<ResponseData>
 ) {
     const resultPosts = await prisma.post.findMany({
         orderBy: {
@@ -20,5 +20,5 @@ export async function POST(
             category: true,
           },
       })
-    return Response.json(resultPosts)
+    return NextResponse.json(resultPosts)
 }
