@@ -5,19 +5,16 @@ import { getSession } from "@/auth";
 import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
-import CreateComment from "@/components/create/CreateComment";
+import CreateCommunity from "@/components/create/CreateCommunity";
 
 interface MainPage {}
-export default function addPost({
-  params,
-}: {
-  params: { categoryId: string; parentId: string };
-}) {
-  const { categoryId, parentId } = params;
+export default function addCommunities() {
   const [blurState, setBluerState] = useState(false);
   const [show, setShow] = useState(false);
+  const [change, setChange] = useState("post");
   const [url, setUrl] = useState("category");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+
   useEffect(() => {
     const checkSession = async () => {
       const session = await getSession();
@@ -34,8 +31,12 @@ export default function addPost({
     show ? setShow(false) : setShow(true);
   }
 
-  const [dbValue, setDbValue] = useState([]);
-  const [activeSearch, setActiveSearch] = useState([]);
+  function changeHandler(item: string) {
+    setChange(item);
+  }
+
+  const [dbValue, setDbValue] = useState<any>([]);
+  const [activeSearch, setActiveSearch] = useState<any>([]);
   const [clear, setClear] = useState("");
 
   return (
@@ -47,9 +48,9 @@ export default function addPost({
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
         dbValue={dbValue}
-        setActiveSearch={setActiveSearch}
-        setClear={setClear}
+        setActiveSearch={activeSearch}
         clear={clear}
+        setClear={setClear}
       />
       <LoginForm
         blur={blur}
@@ -65,7 +66,7 @@ export default function addPost({
       />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
         <SideBar blurState={blurState} />
-        <CreateComment commentId={parentId} categoryId={categoryId} />
+        <CreateCommunity />
       </div>
     </main>
   );

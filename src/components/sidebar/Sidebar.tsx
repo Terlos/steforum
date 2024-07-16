@@ -6,12 +6,14 @@ import recent from "/public/recent.svg";
 import communities from "/public/communities.svg";
 import friends from "/public/friends.svg";
 import { SectionItems } from "./SectionItems";
+import { Post } from "@/app/utils/types/types";
 
 interface SideBar {
   blurState: Boolean;
+  isLoggedIn?: Boolean;
 }
 
-export function SideBar({ blurState }: SideBar) {
+export function SideBar({ blurState, isLoggedIn }: SideBar) {
   const [openIndices, setOpenIndices] = useState<number[]>([]);
   const [recent, setRecent] = useState([]);
   const [likePost, setLikePost] = useState([]);
@@ -26,11 +28,16 @@ export function SideBar({ blurState }: SideBar) {
   };
 
   function getFromLocalStorage() {
-    const storedItems = localStorage.getItem("recentItems");
-
-    if (storedItems) {
-      setRecent(JSON.parse(storedItems));
+    console.log(isLoggedIn);
+    if (isLoggedIn) {
+      const storedItems = localStorage.getItem("recentItems");
+      if (storedItems) {
+        setRecent(JSON.parse(storedItems));
+      } else {
+        setRecent([]);
+      }
     } else {
+      localStorage.removeItem("recentItems");
       setRecent([]);
     }
   }
@@ -41,7 +48,7 @@ export function SideBar({ blurState }: SideBar) {
     })
       .then((r) => r.json())
       .then((data) => {
-        const result = data.filter((item: any) => item.parentId == null);
+        const result = data.filter((item: Post) => item.parentId == null);
         setLikePost(result);
         setLoading(false);
       })

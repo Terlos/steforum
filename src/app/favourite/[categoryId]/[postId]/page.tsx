@@ -1,12 +1,12 @@
 "use client";
 import { Navbar } from "@/components/Navbar";
 import { useState, useEffect } from "react";
-import { CategoryCard } from "@/components/category/CategoryCard";
-import { getSession, login, logout } from "@/auth";
+import { getSession } from "@/auth";
 import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
 import { PostCard } from "@/components/PostCard";
+import { Post } from "@/app/utils/types/types";
 
 export default function Favourite({
   params,
@@ -16,7 +16,6 @@ export default function Favourite({
   const { categoryId, postId } = params;
   const [blurState, setBluerState] = useState(false);
   const [show, setShow] = useState(false);
-  const [change, setChange] = useState("post");
   const [url, setUrl] = useState("post");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
   const [showCom, setShowCom] = useState(true);
@@ -37,19 +36,22 @@ export default function Favourite({
     show ? setShow(false) : setShow(true);
   }
 
-  function changeHandler(item: string) {
-    setChange(item);
-  }
+  const [dbValue, setDbValue] = useState<Post[]>([]);
+  const [activeSearch, setActiveSearch] = useState<Post[]>([]);
+  const [clear, setClear] = useState("");
 
   return (
     <main className="flex flex-col items-start justify-start w-full bg-darkWhite relative">
       <Navbar
         blur={blur}
         blurState={blurState}
-        changeHandler={changeHandler}
         setUrl={setUrl}
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
+        dbValue={dbValue}
+        setActiveSearch={setActiveSearch}
+        setClear={setClear}
+        clear={clear}
       />
       <LoginForm
         blur={blur}
@@ -64,7 +66,7 @@ export default function Favourite({
         show={show}
       />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} />
+        <SideBar blurState={blurState} isLoggedIn={isLoggedIn} />
         <PostCard
           url={url}
           blurState={blurState}
@@ -74,6 +76,9 @@ export default function Favourite({
           blur={blur}
           categoryId={categoryId}
           postId={postId}
+          setDbValue={setDbValue}
+          activeSearch={activeSearch}
+          clear={clear}
         />
       </div>
     </main>

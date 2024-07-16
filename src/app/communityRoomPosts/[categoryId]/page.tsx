@@ -1,23 +1,25 @@
 "use client";
-import { Navbar } from "@/components/Navbar";
-import { useState, useEffect } from "react";
-import { getSession } from "@/auth";
 import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
-import CreateComment from "@/components/create/CreateComment";
-
-interface MainPage {}
-export default function addPost({
+import { useState, useEffect } from "react";
+import { CommunityRoomPosts } from "@/components/category/CommunityRoomPosts";
+import { getSession } from "@/auth";
+import { Navbar } from "@/components/Navbar";
+import { Category, Post } from "@/app/utils/types/types";
+export default function CategoryRoom({
   params,
 }: {
-  params: { categoryId: string; parentId: string };
+  params: { categoryId: string };
 }) {
-  const { categoryId, parentId } = params;
-  const [blurState, setBluerState] = useState(false);
+  const { categoryId } = params;
+  const [blurState, setBlurState] = useState(false);
   const [show, setShow] = useState(false);
-  const [url, setUrl] = useState("category");
+  const [url, setUrl] = useState("all");
+  const [category, setCategory] = useState<Category[]>([]);
+  const [showCom, setShowCom] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+
   useEffect(() => {
     const checkSession = async () => {
       const session = await getSession();
@@ -27,15 +29,15 @@ export default function addPost({
   }, []);
 
   function blur() {
-    blurState ? setBluerState(false) : setBluerState(true);
+    setBlurState(!blurState);
   }
 
   function showForm() {
-    show ? setShow(false) : setShow(true);
+    setShow(!show);
   }
 
-  const [dbValue, setDbValue] = useState([]);
-  const [activeSearch, setActiveSearch] = useState([]);
+  const [dbValue, setDbValue] = useState<Post[]>([]);
+  const [activeSearch, setActiveSearch] = useState<Post[]>([]);
   const [clear, setClear] = useState("");
 
   return (
@@ -46,6 +48,7 @@ export default function addPost({
         setUrl={setUrl}
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
+        categoryRoomId={categoryId}
         dbValue={dbValue}
         setActiveSearch={setActiveSearch}
         setClear={setClear}
@@ -64,8 +67,21 @@ export default function addPost({
         show={show}
       />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} />
-        <CreateComment commentId={parentId} categoryId={categoryId} />
+        <SideBar blurState={blurState} isLoggedIn={isLoggedIn} />
+        <CommunityRoomPosts
+          category={category}
+          url={url}
+          blurState={blurState}
+          id={categoryId}
+          setCategory={setCategory}
+          setShowCom={setShowCom}
+          showCom={showCom}
+          isLoggedIn={isLoggedIn}
+          blur={blur}
+          setDbValue={setDbValue}
+          activeSearch={activeSearch}
+          clear={clear}
+        />
       </div>
     </main>
   );

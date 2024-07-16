@@ -5,15 +5,15 @@ import { getSession } from "@/auth";
 import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
-import CreateComment from "@/components/create/CreateComment";
+import { AddCommunityRoomPost } from "@/components/create/AddCommunityRoomPost";
 
 interface MainPage {}
-export default function addPost({
+export default function addCommunityPost({
   params,
 }: {
-  params: { categoryId: string; parentId: string };
+  params: { categoryId: string };
 }) {
-  const { categoryId, parentId } = params;
+  const { categoryId } = params;
   const [blurState, setBluerState] = useState(false);
   const [show, setShow] = useState(false);
   const [url, setUrl] = useState("category");
@@ -34,8 +34,8 @@ export default function addPost({
     show ? setShow(false) : setShow(true);
   }
 
-  const [dbValue, setDbValue] = useState([]);
-  const [activeSearch, setActiveSearch] = useState([]);
+  const [dbValue, setDbValue] = useState<any>([]);
+  const [activeSearch, setActiveSearch] = useState<any>([]);
   const [clear, setClear] = useState("");
 
   return (
@@ -65,7 +65,7 @@ export default function addPost({
       />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
         <SideBar blurState={blurState} />
-        <CreateComment commentId={parentId} categoryId={categoryId} />
+        <AddCommunityRoomPost categoryId={categoryId} />
       </div>
     </main>
   );

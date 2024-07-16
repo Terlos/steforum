@@ -2,7 +2,6 @@
 import cancel from "/public/cancel.svg";
 import Image from "next/image";
 import { registerForm } from "@/actions/register";
-// @ts-ignore
 import { Toaster, toast } from "sonner";
 import { useState } from "react";
 

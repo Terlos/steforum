@@ -20,7 +20,7 @@ export const createComment = async (formData: FormData, parentId: string, catego
     throw new Error("CategoryId is required.");
   }
 
-  const createCategory = await prisma.post.create({
+  const createComment = await prisma.post.create({
     data: {
       title: "",
       text: text,
@@ -31,5 +31,5 @@ export const createComment = async (formData: FormData, parentId: string, catego
     },
   });
 
-  return createCategory;
+  return createComment;
 };

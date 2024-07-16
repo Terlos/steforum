@@ -1,23 +1,32 @@
 "use client";
 import { Navbar } from "@/components/Navbar";
 import { useState, useEffect } from "react";
-import { getSession } from "@/auth";
+import { CommunityRoom } from "@/components/category/CommunityRoom";
+import { getSession, login, logout } from "@/auth";
 import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { SideBar } from "@/components/sidebar/Sidebar";
-import CreateComment from "@/components/create/CreateComment";
+import { Post, Author } from "@/app/utils/types/types";
 
-interface MainPage {}
-export default function addPost({
-  params,
-}: {
-  params: { categoryId: string; parentId: string };
-}) {
-  const { categoryId, parentId } = params;
+interface Category {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  like: number;
+  author: Author;
+  posts: Post[];
+  imageUrl: string;
+}
+
+export default function Communities() {
   const [blurState, setBluerState] = useState(false);
   const [show, setShow] = useState(false);
+  const [change, setChange] = useState("post");
   const [url, setUrl] = useState("category");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
+  const [showCom, setShowCom] = useState(true);
+  // Check if user is logged in on component mount
   useEffect(() => {
     const checkSession = async () => {
       const session = await getSession();
@@ -34,8 +43,8 @@ export default function addPost({
     show ? setShow(false) : setShow(true);
   }
 
-  const [dbValue, setDbValue] = useState([]);
-  const [activeSearch, setActiveSearch] = useState([]);
+  const [dbValue, setDbValue] = useState<Array<Post | Category>>([]);
+  const [activeSearch, setActiveSearch] = useState<Category[]>([]);
   const [clear, setClear] = useState("");
 
   return (
@@ -46,6 +55,7 @@ export default function addPost({
         setUrl={setUrl}
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
+        showForm={showForm}
         dbValue={dbValue}
         setActiveSearch={setActiveSearch}
         setClear={setClear}
@@ -64,8 +74,14 @@ export default function addPost({
         show={show}
       />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} />
-        <CreateComment commentId={parentId} categoryId={categoryId} />
+        <SideBar blurState={blurState} isLoggedIn={isLoggedIn} />
+        <CommunityRoom
+          blurState={blurState}
+          url={url}
+          setDbValue={setDbValue}
+          activeSearch={activeSearch}
+          clear={clear}
+        />
       </div>
     </main>
   );

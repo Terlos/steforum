@@ -1,36 +1,36 @@
-"use client";
 import Image from "next/image";
 import profile from "/public/profile.png";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Heart } from "lucide-react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import { updatePostLikes } from "@/actions/updatePostLikes";
 import { toast } from "sonner";
-import { usePathname } from "next/navigation";
-import { Post } from "@/app/utils/types/types";
+import Link from "next/link";
+import { Heart } from "lucide-react";
+import { Category, Post } from "@/app/utils/types/types";
 
 interface postInterface {
   url: string;
-  blurState: boolean;
+  blurState: Boolean;
+  id: string;
+  setCategory: (item: Category[]) => void;
   setShowCom: (item: boolean) => void;
-  showCom: Boolean;
-  isLoggedIn?: Boolean;
+  showCom: boolean;
+  category: Category[];
+  isLoggedIn: Boolean;
   blur: () => void;
-  categoryId?: string;
-  postId?: string;
-  setDbValue: Dispatch<SetStateAction<Post[]>>;
+  setDbValue: (item: Post[]) => void;
   activeSearch: Post[];
   clear: string;
 }
 
-export function PostCard({
+export function CommunityRoomPosts({
   url,
   blurState,
+  id,
+  setCategory,
   setShowCom,
   showCom,
   isLoggedIn,
   blur,
-  postId,
   setDbValue,
   activeSearch,
   clear,
@@ -40,64 +40,45 @@ export function PostCard({
   const [error, setError] = useState<string | null>(null);
   const [nothing, setNothing] = useState(false);
   const [holder, setHolder] = useState([]);
-  const pathname = usePathname();
 
   useEffect(() => {
-    if (pathname.startsWith("/favourite")) {
-      const handleSubmit = async (postId: string) => {
-        fetch("http://localhost:3000/api/post/favourite", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ postId: postId }),
+    const filteredData = DATA.find((item) => item.name === url);
+    if (filteredData) {
+      const { url: apiUrl, name: apiName } = filteredData;
+
+      const changeApi =
+        apiName === "newest" || apiName === "latest"
+          ? `${apiUrl}/${id}/${apiName}`
+          : `${apiUrl}/${id}`;
+
+      fetch(`${changeApi}`, {
+        method: "POST",
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          console.log(data);
+          const result = data.filter((item: Post) => item.parentId == null);
+          setCategory(data);
+          const postsWithFormattedDate = result.map((post: Post) => ({
+            ...post,
+            createdAt: new Date(post.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            }),
+          }));
+          setPosts(postsWithFormattedDate);
+          setDbValue(postsWithFormattedDate);
+          setHolder(postsWithFormattedDate);
+          setLoading(false);
         })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            setPosts(data.posts);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error("Error fetching data:", error);
-            setLoading(false);
-          });
-      };
-      postId && handleSubmit(postId);
-    } else {
-      const filteredData = DATA.find((item) => item.name === url);
-      if (filteredData) {
-        const { url: apiUrl } = filteredData;
-        fetch(apiUrl, {
-          method: "POST",
-        })
-          .then((r) => r.json())
-          .then((data) => {
-            const result = data.filter((item: Post) => item.parentId == null);
-            const postsWithFormattedDate = result.map((post: Post) => ({
-              ...post,
-              createdAt: new Date(post.createdAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              }),
-            }));
-            setLoading(false);
-            setDbValue(postsWithFormattedDate);
-            setHolder(postsWithFormattedDate);
-          })
-          .catch((error) => {
-            console.error("Error fetching posts:", error);
-            setError("Error fetching posts. Please try again later.");
-            setLoading(false);
-          });
-      }
+        .catch((error) => {
+          console.error("Error fetching posts:", error);
+          setError("Error fetching posts. Please try again later.");
+          setLoading(false);
+        });
     }
-  }, [url, postId, pathname, setDbValue]);
+  }, [url]);
 
   useEffect(() => {
     function search(holder: Post[]) {
@@ -115,7 +96,7 @@ export function PostCard({
     search(holder);
   }, [clear, activeSearch, holder]);
 
-  function addLike(isLiked: boolean, id: string) {
+  function addLike(isLiked: Boolean, id: string) {
     if (isLoggedIn) {
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
@@ -138,7 +119,7 @@ export function PostCard({
   return (
     <div
       className={`flex flex-col justify-start items-center gap-6 ${
-        blurState ? "blur" : ""
+        blurState ? "blur" : " "
       }`}
     >
       {loading ? (
@@ -163,7 +144,7 @@ export function PostCard({
                   <p className="text-xs font-medium text-gray">
                     {item.createdAt}
                   </p>
-                  <Link href={`/categoryRoom/${item.categoryId}`}>
+                  <Link href={`/communityRoom/${item.categoryId}`}>
                     <p className="text-xs font-medium text-gray">
                       Community: {item.category.title}
                     </p>
@@ -195,7 +176,7 @@ export function PostCard({
                   onClick={() => {
                     addLike(item.isLiked, item.id);
                   }}
-                  className="flex flex-row justify-center items-center text-sm gap-1"
+                  className={`flex flew-row justify-center items-center text-sm gap-1 `}
                 >
                   {item.like}{" "}
                   <Heart
@@ -228,17 +209,17 @@ export function PostCard({
 const DATA = [
   {
     id: 1,
-    name: "post",
-    url: "http://localhost:3000/api/post",
+    name: "all",
+    url: "http://localhost:3000/api/communityRoomPosts",
   },
   {
-    id: 2,
+    id: 1,
     name: "newest",
-    url: "http://localhost:3000/api/post/newest",
+    url: "http://localhost:3000/api/communityRoomPosts",
   },
   {
-    id: 3,
+    id: 1,
     name: "latest",
-    url: "http://localhost:3000/api/post/latest",
+    url: "http://localhost:3000/api/communityRoomPosts",
   },
 ];

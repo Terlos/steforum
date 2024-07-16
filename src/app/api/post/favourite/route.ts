@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { categoryId, postId } = body;
+    const { postId } = body;
 
     const session = await getSession();
     if (!session) {

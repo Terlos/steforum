@@ -35,7 +35,7 @@ model Profile {
 model Category {
     id        String   @id @default(uuid())
     createdAt DateTime @default(now())
-    name      String
+    title     String
     author    User     @relation(fields: [authorId], references: [id])
     authorId  String
     posts     Post[]

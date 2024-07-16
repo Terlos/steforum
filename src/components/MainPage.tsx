@@ -5,19 +5,15 @@ import { SideBar } from "./sidebar/Sidebar";
 import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 import { useState, useEffect } from "react";
-import { CategoryCard } from "@/components/category/CategoryCard";
-import { getSession, login, logout } from "@/auth";
-import CreatePost from "./create/CreatePost";
-import CreateCategory from "./create/CreateCategory";
-
+import { getSession } from "@/auth";
+import { Post } from "@/app/utils/types/types";
 interface MainPage {}
 export function MainPage() {
   const [blurState, setBluerState] = useState(false);
   const [show, setShow] = useState(false);
-  const [change, setChange] = useState("post");
   const [url, setUrl] = useState("post");
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
-  const [showCom, setShowCom] = useState(true);
+  const [showCom, setShowCom] = useState<Boolean>(true);
   // Check if user is logged in on component mount
   useEffect(() => {
     const checkSession = async () => {
@@ -35,19 +31,21 @@ export function MainPage() {
     show ? setShow(false) : setShow(true);
   }
 
-  function changeHandler(item: string) {
-    setChange(item);
-  }
-
+  const [dbValue, setDbValue] = useState<Post[]>([]);
+  const [activeSearch, setActiveSearch] = useState<Post[]>([]);
+  const [clear, setClear] = useState("");
   return (
     <main className="flex flex-col items-start justify-start w-full bg-darkWhite relative">
       <Navbar
         blur={blur}
         blurState={blurState}
-        changeHandler={changeHandler}
         setUrl={setUrl}
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
+        dbValue={dbValue}
+        setActiveSearch={setActiveSearch}
+        setClear={setClear}
+        clear={clear}
       />
       <LoginForm
         blur={blur}
@@ -62,7 +60,7 @@ export function MainPage() {
         show={show}
       />
       <div className={`grid grid-cols-256-1fr-256 w-full`}>
-        <SideBar blurState={blurState} />
+        <SideBar blurState={blurState} isLoggedIn={isLoggedIn} />
         <PostCard
           url={url}
           blurState={blurState}
@@ -70,6 +68,9 @@ export function MainPage() {
           showCom={showCom}
           isLoggedIn={isLoggedIn}
           blur={blur}
+          setDbValue={setDbValue}
+          activeSearch={activeSearch}
+          clear={clear}
         />
       </div>
     </main>

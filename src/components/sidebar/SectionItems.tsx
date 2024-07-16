@@ -1,5 +1,5 @@
 import Link from "next/link";
-
+import { Category, Post } from "@/app/utils/types/types";
 export function SectionItems({
   index,
   recent,
@@ -7,8 +7,8 @@ export function SectionItems({
   loading,
 }: {
   index: number;
-  recent: any;
-  likePost: any;
+  recent: Category[];
+  likePost: Post[];
   loading: Boolean;
 }) {
   if (index === 0) {
@@ -19,14 +19,14 @@ export function SectionItems({
             {[...recent]
               .reverse()
               .slice(0, 5)
-              .map((recentItem: any) => (
+              .map((recentItem: Category) => (
                 <Link
-                  href={`/categoryRoom/${recentItem.id}`}
+                  href={`/communityRoomPosts/${recentItem.id}`}
                   key={recentItem.id}
                 >
                   <div className="border-l-2 border-light-gray hover:border-mid-gray py-2 hover:bg-light-gray px-4 rounded-r-2xl">
                     <p className="text-gray font-medium text-sm">
-                      {recentItem.name}
+                      {recentItem.title}
                     </p>
                   </div>
                 </Link>
@@ -51,7 +51,7 @@ export function SectionItems({
         {[...likePost]
           .reverse()
           .slice(0, 5)
-          .map((recentItem: any) => (
+          .map((recentItem: Post) => (
             <Link
               href={`/favourite/${recentItem.categoryId}/${recentItem.id}`}
               key={recentItem.id}

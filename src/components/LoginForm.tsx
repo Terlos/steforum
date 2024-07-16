@@ -16,7 +16,6 @@ export function LoginForm({ blur, blurState, showForm, show }: LoginForm) {
         await login(formData);
         redirect("/");
       }}
-      method="POST"
       className={`flex flex-row justify-center items-center px-4 md:px-0 absolute left-3 right-0 top-20 z-20 ${
         blurState ? "" : "hidden"
       } ${show ? "hidden" : ""}`}

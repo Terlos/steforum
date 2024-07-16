@@ -5,9 +5,8 @@ import { SideBar } from "@/components/sidebar/Sidebar";
 import { useState, useEffect } from "react";
 import { Comments } from "@/components/Comments";
 import { getSession } from "@/auth";
-import CreatePost from "@/components/create/CreatePost";
 import { Navbar } from "@/components/Navbar";
-import CreateComment from "@/components/create/CreateComment";
+import { Post } from "@/app/utils/types/types";
 
 export default function CommentsPage({
   params,
@@ -18,9 +17,7 @@ export default function CommentsPage({
   const [blurState, setBlurState] = useState(false);
   const [show, setShow] = useState(false);
   const [url, setUrl] = useState("all");
-  const [category, setCategory] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState<Boolean>(false);
-  const [change, setChange] = useState("comment");
 
   useEffect(() => {
     const checkSession = async () => {
@@ -30,10 +27,6 @@ export default function CommentsPage({
     checkSession();
   }, []);
 
-  function changeHandler(item: string) {
-    setChange(item);
-  }
-
   function blur() {
     setBlurState(!blurState);
   }
@@ -42,18 +35,24 @@ export default function CommentsPage({
     setShow(!show);
   }
 
+  const [dbValue, setDbValue] = useState<Post[]>([]);
+  const [activeSearch, setActiveSearch] = useState<Post[]>([]);
+  const [clear, setClear] = useState("");
+
   return (
     <main className="flex flex-col items-start justify-start w-full bg-darkWhite relative">
       <Navbar
         blur={blur}
         blurState={blurState}
         setUrl={setUrl}
-        category={category}
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
-        changeHandler={changeHandler}
         commentId={parentId}
         categoryRoomId={categoryId}
+        dbValue={dbValue}
+        setActiveSearch={setActiveSearch}
+        setClear={setClear}
+        clear={clear}
       />
       <LoginForm
         blur={blur}
@@ -72,8 +71,8 @@ export default function CommentsPage({
         <Comments
           blurState={blurState}
           id={parentId}
-          setCategory={setCategory}
           url={url}
+          isLoggedIn={isLoggedIn}
         />
       </div>
     </main>

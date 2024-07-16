@@ -5,32 +5,37 @@ import { SearchBar } from "../components/SearchBar";
 import { useState } from "react";
 import { logout } from "@/auth";
 import { usePathname } from "next/navigation";
-import { Toaster, toast } from "sonner";
-import { LoginForm } from "./LoginForm";
+import { toast } from "sonner";
+import { Post, Category } from "@/app/utils/types/types";
+
 interface Navbar {
   blur: () => void;
   blurState: Boolean;
-  changeHandler: (item: string) => void;
   setUrl: (item: string) => void;
   isLoggedIn: Boolean;
   setIsLoggedIn: (item: Boolean) => void;
-  category?: any;
   categoryRoomId?: string;
   commentId?: string;
   showForm?: () => void;
+  dbValue: any;
+  setActiveSearch: (item: any) => void;
+  setClear: (item: string) => void;
+  clear: string;
 }
 
 export function Navbar({
   blur,
   blurState,
-  changeHandler,
   setUrl,
   isLoggedIn,
   setIsLoggedIn,
-  category,
   categoryRoomId,
   commentId,
   showForm,
+  dbValue,
+  setActiveSearch,
+  setClear,
+  clear,
 }: Navbar) {
   const [btnName, setBtnName] = useState<String>("Newest");
   const [showMenu, setShowMenu] = useState(false);
@@ -39,7 +44,11 @@ export function Navbar({
   const pathname = usePathname();
   return (
     <div
-      className={`flex sticky top-0 flex-row justify-center items-center w-full z-10 bg-darkWhite pb-6 ${
+      className={` ${
+        pathname.startsWith("/favourite")
+          ? "h-[149.33px] items-start"
+          : "items-center"
+      } flex sticky top-0 flex-row justify-center w-full z-10 bg-darkWhite pb-6 ${
         blurState ? "blur" : ""
       }`}
     >
@@ -50,7 +59,16 @@ export function Navbar({
           </Link>
         </div>
         <div className="flex flex-col justify-center items-center w-full">
-          <SearchBar />
+          {!pathname.startsWith("/comments") &&
+            !pathname.startsWith("/favourite") && (
+              <SearchBar
+                dbValue={dbValue}
+                setActiveSearch={setActiveSearch}
+                setClear={setClear}
+                clear={clear}
+              />
+            )}
+
           <div className="flex flex-row justify-between items-center w-full max-w-[26rem] pt-6">
             <div className="flex flex-row justify-center items-center gap-2">
               {pathname === "/" && (
@@ -60,28 +78,28 @@ export function Navbar({
                       Post
                     </h1>
                   </div>
-                  <Link href={"/communities"}>
+                  <Link href={"/communityRoom"}>
                     <h1 className="hover:cursor-pointer font-semibold text-gray py-1 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg">
                       Communities
                     </h1>
                   </Link>
                 </>
               )}
-              {pathname === "/communities" && (
+              {pathname === "/communityRoom" && (
                 <>
                   <Link href={"/"}>
                     <h1 className="hover:cursor-pointer font-semibold text-gray py-1 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg">
                       Post
                     </h1>
                   </Link>
-                  {pathname === "/communities" && isLoggedIn == true ? (
-                    <Link href={"/communities/addCommunities"}>
+                  {pathname === "/communityRoom" && isLoggedIn == true ? (
+                    <Link href={"/communityRoom/addCommunities"}>
                       <h1 className="hover:cursor-pointer font-semibold text-gray py-1 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg">
                         Add community
                       </h1>
                     </Link>
                   ) : (
-                    pathname === "/communities" && (
+                    pathname === "/communityRoom" && (
                       <>
                         <h1
                           onClick={() => {
@@ -100,14 +118,17 @@ export function Navbar({
                 </>
               )}
 
-              {pathname.startsWith("/categoryRoom") && isLoggedIn == true ? (
-                <Link href={`/categoryRoom/${categoryRoomId}/addPost`}>
+              {pathname.startsWith("/communityRoomPosts") &&
+              isLoggedIn == true ? (
+                <Link
+                  href={`/communityRoomPosts/${categoryRoomId}/addCommunityRoomPost`}
+                >
                   <h1 className="hover:cursor-pointer font-semibold text-gray py-1 px-3 hover:bg-light-gray first:rounded-t-lg last:rounded-b-lg">
                     Add post
                   </h1>
                 </Link>
               ) : (
-                pathname.startsWith("/categoryRoom") && (
+                pathname.startsWith("/communityRoomPosts") && (
                   <>
                     <h1
                       onClick={() => {
@@ -147,7 +168,8 @@ export function Navbar({
               )}
             </div>
             {pathname.endsWith("/addCommunities") ||
-            pathname.endsWith("/comments/") ? (
+            pathname.endsWith("/comments/") ||
+            pathname.startsWith("/favourite") ? (
               <></>
             ) : (
               <div className="flex flex-row justify-between items-center relative w-[10rem]">
