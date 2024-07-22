@@ -22,31 +22,40 @@ export async function decrypt(input: string): Promise<any> {
 }
 
 export async function login(formData: FormData) {
-  // Verify credentials && get the user
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
-  const user = await prisma.user.findUnique({
-    where:{
-      email: email,
-      password: password,
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      }
+    });
+
+    if (!user) {
+      console.log("User not found");
+      return;
     }
-  });
-  if (user && user.password === password) {
-    console.log("Password correct")
 
-  const expires = new Date(Date.now() + 10 * 100000);
-  const session = await encrypt({ user, expires });
+    const argon2 = require('argon2');
+    const isPasswordCorrect = await argon2.verify(user.password, password);
+    
+    if (isPasswordCorrect) {
+      console.log("Password correct");
 
-  // Save the session in a cookie
-  cookies().set("session", session, { expires, httpOnly: true });
-  }else{
-    console.log("Password incorrect")
+      const expires = new Date(Date.now() + 10 * 100000);
+      const session = await encrypt({ user, expires });
+
+      cookies().set("session", session, { expires, httpOnly: true });
+    } else {
+      console.log("Password incorrect");
+    }
+  } catch (err) {
+    console.error("An error occurred during login:", err);
   }
 }
 
 export async function logout() {
-  // Destroy the session
   cookies().set("session", "", { expires: new Date(0) });
 }
 
@@ -60,7 +69,6 @@ export async function updateSession(request: NextRequest) {
   const session = request.cookies.get("session")?.value;
   if (!session) return;
 
-  // Refresh the session so it doesn't expire
   const parsed = await decrypt(session);
   parsed.expires = new Date(Date.now() + 10 * 100000);
   const res = NextResponse.next();

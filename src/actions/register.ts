@@ -11,6 +11,9 @@ export const registerForm = async(formData:FormData) =>{
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const rePassword = formData.get("rePassword") as string;
+    const argon2 = require('argon2');
+
+    
     if(password === rePassword){
         const emailExists = await prisma.user.findUnique({
             where: {
@@ -18,15 +21,20 @@ export const registerForm = async(formData:FormData) =>{
             }
           });
         if(!emailExists){
-        const user = await prisma.user.create({
-          data: {
-            name: name,
-            email: email,
-            password: password,
-            banned: false,
-            imageUrl: ""
-          },
-        });
+          try {
+            const hash = await argon2.hash(password);
+            const user = await prisma.user.create({
+              data: {
+                name: name,
+                email: email,
+                password: hash,
+                banned: false,
+                imageUrl: ""
+              },
+            });
+          } catch (err) {
+            console.log(err)
+          }
     }else{
         console.error("User with this email already exists")
     }
