@@ -16,6 +16,7 @@ export const editProfile = async(formData:FormData, imageUrl: string) =>{
     const authorId = session?.user.id;
 
     if (authorId) {
+        console.log("test", imageUrl)
     const editProfile = await prisma.user.update({
         where: {
             id: authorId

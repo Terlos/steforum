@@ -18,7 +18,7 @@ model User {
     liked      Liked[]
     profile    Profile?
     banned     Boolean?   @default(false)
-    imageUrl   String
+    imageUrl   String     @default("https://utfs.io/f/44e35f99-64e3-44b7-8bb5-c2568ce1fcfd-u4wary.jpg")
 }
 
 enum Role {

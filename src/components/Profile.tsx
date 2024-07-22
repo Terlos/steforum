@@ -36,7 +36,6 @@ export function Profile({ showProfile, showProfileHandler }: Profile) {
             <div className="flex flex-col justify-center items-start gap-3 w-full">
               <h4 className="font-semibold text-sm text-gray">Username</h4>
               <input
-                required
                 type="text"
                 name="name"
                 className="w-96 rounded-lg h-10 border-gray border place-content-start pl-2  text-gray text-sm"

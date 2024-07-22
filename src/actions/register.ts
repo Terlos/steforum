@@ -29,7 +29,7 @@ export const registerForm = async(formData:FormData) =>{
                 email: email,
                 password: hash,
                 banned: false,
-                imageUrl: ""
+                imageUrl: "https://utfs.io/f/44e35f99-64e3-44b7-8bb5-c2568ce1fcfd-u4wary.jpg"
               },
             });
           } catch (err) {
