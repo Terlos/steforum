@@ -13,6 +13,10 @@ export const createPost = async(formData:FormData, categoryId: string, imageUrl:
     const session = await getSession();
     const authorId = session?.user.id;
 
+    if (!authorId) {
+      throw new Error("User is not authenticated.");
+    }
+    if(authorId){
     const createCategory = await prisma.post.create({
         data: {
           title: title,
@@ -23,4 +27,5 @@ export const createPost = async(formData:FormData, categoryId: string, imageUrl:
           imageUrl: imageUrl,
         },
       });
+    }
 }

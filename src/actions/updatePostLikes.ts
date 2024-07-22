@@ -12,7 +12,7 @@ export const updatePostLikes = async(postId: string) => {
         throw new Error("User is not authenticated");
     }
 
-
+if(userId){
     const existPost = await prisma.liked.findFirst({
         where: {
           authorId: userId,
@@ -78,5 +78,6 @@ export const updatePostLikes = async(postId: string) => {
 
     return updatePost;
     }
+}
 }
 };

@@ -13,6 +13,11 @@ export const createCommunity = async(formData:FormData, imageUrl: string) =>{
 
     const id = session?.user.id; 
 
+    if (!id) {
+      throw new Error("User is not authenticated.");
+    }
+
+    if(id){
     const createCommunity = await prisma.category.create({
         data: {
           title: category,
@@ -20,4 +25,5 @@ export const createCommunity = async(formData:FormData, imageUrl: string) =>{
           imageUrl: imageUrl,
         },
       });
+    }
 }
